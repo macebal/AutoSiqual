@@ -7,11 +7,13 @@
 # pyuic5 "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\log.ui" -o "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\log.py"
 # pyinstaller main.py --onefile
 
+from datetime import datetime
 from distutils.command.config import config
 import logging, sys
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import QSize
 import pyautogui
+from ExcelParser_CAT import ExcelParserCAT
 from config import ConfigParser
 from gui import Ui_MainWindow  # importing the ui
 from log import Ui_LogWindow
@@ -43,6 +45,12 @@ class mainWindow(QtWidgets.QMainWindow):
             exit(1)
 
         self.populate_fields()
+
+        #Testing
+        test_date = datetime(2022,1,4)
+        parser = ExcelParserCAT()
+        data = parser.parse_products(test_date, "CPC30")
+        # json_dump(data, 'C:\\Users\\macebal\\Desktop\\Python\\AutoSiqual\\dump.json')
 
         self.ui.btn_start.clicked.connect(self.inputData)
         
@@ -81,7 +89,7 @@ class mainWindow(QtWidgets.QMainWindow):
             self.log.show()
 
             self.logger.info("********  AutoSiqual V2.0.0  ********")
-            start_robot(material)
+            #start_robot(material)
         else:
             QtWidgets.QMessageBox.warning(self, "Advertencia", "Seleccione un material válido.", QtWidgets.QMessageBox.Ok)
 
@@ -96,12 +104,10 @@ class LogWindow(QtWidgets.QMainWindow, logging.Handler):
 
     def emit(self, record):
         #this method has to be implemented fo the logger to emit in this component
-        # QApplication.processEvents()
         self.edit.appendPlainText(self.format(record)) 
         
     def clear_log(self):
         self.edit.clear()
-
 
 app = QtWidgets.QApplication([])
 

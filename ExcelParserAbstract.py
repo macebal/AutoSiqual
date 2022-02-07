@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
-import datetime
+from datetime import datetime, timedelta
 
-class ExcelParserInterface(ABC):
+class ExcelParserAbstract(ABC):
     
-    def find_date(self, date, worksheet, column) -> int:
+    def _find_date(self, date, worksheet, column) -> int:
         """
         Params:
         \tdate: The date to search for
@@ -21,7 +21,7 @@ class ExcelParserInterface(ABC):
         else:
             return -1
 
-    def find_nearest_date(self,date, search_previous, worksheet, column) -> int:
+    def _find_nearest_date(self,date, search_previous, worksheet, column) -> int:
         """
         Recursively find the nearest date in the worksheet.
 
@@ -36,19 +36,19 @@ class ExcelParserInterface(ABC):
         """
 
         date_current = date
-        result = self.find_date(date, worksheet, column)
-
+        result = self._find_date(date, worksheet, column)
+        
         if result == -1:
             if search_previous:
-                date_current -= datetime.timedelta(days=1)
+                date_current -= timedelta(days=1)
             else:
-                date_current += datetime.timedelta(days=1)
+                date_current += timedelta(days=1)
 
-            return self.find_nearest_date(date_current, search_previous, worksheet, column)
+            return self._find_nearest_date(date_current, search_previous, worksheet, column)
         else:
             return result
 
-    def find_parameter_column(parameter, worksheet, header_row) -> int:
+    def _find_parameter_column(self, parameter, worksheet, header_row) -> int:
         """
         Find the column for a given parameter cell name
         \n
@@ -64,15 +64,16 @@ class ExcelParserInterface(ABC):
         for row in worksheet.iter_rows(min_row=header_row, max_row=header_row):
             for cell in row:
                 if cell.value == parameter:
-                    return cell.column - 1 #TODO it's -1 porque la columna 4 se convierte en 3 cuando la utilizas en el array de filas
+                    return cell.column - 1 # it's -1 because cell.column is 1-based index.
         else:
             return -1
 
     @abstractmethod
-    def parse_products(start_date, material) -> list:
+    def parse_products(self, start_date, material) -> list:
         """
-        TODO:
-        Parses the corresponding excel file looking for the 
+        Parses the corresponding excel file looking for the material data provided in the config.json file. It parses onwards from start_date
+        \n
+        Returns a list of dicts where each item is one day and each key:value pair is the siqual code and the cell value respectively.
         """
         pass
 

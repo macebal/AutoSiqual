@@ -140,4 +140,5 @@ def start_robot(material):
     qt_sleep(DELAY_BETWEEN_COMMANDS)
 
     date = pyperclip.paste()
-    print(date)
+
+    #TODO: Add try/catch to handle exceptions on the import module

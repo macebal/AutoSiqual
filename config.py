@@ -2,6 +2,8 @@
 import json
 from unittest.mock import DEFAULT
 
+from matplotlib.font_manager import json_load
+
 class ConfigParser(object):
 
     CONFIG_DATA = ""
@@ -12,7 +14,7 @@ class ConfigParser(object):
     def __init__(self):
 
         try:
-            with open('config.json', 'r') as file:
+            with open('config.json', 'r', encoding='utf-8') as file:
                 self.CONFIG_DATA = json.load(file)
         except:
             raise Exception("No existe el archivo config.json.")
@@ -95,9 +97,30 @@ class ConfigParser(object):
         \t\tname (str): the full name
         \t\tsiqualName (str): the Siqual name
         \t\tworksheetName (str): the name of the worksheet containing the data to input for that material
+        \t\tisRawMaterial (bool): if the material is a product or a raw material
+        \t\columnsToInput (dict): an object with key:value pairs of equivalencies between siqual codes and column names of the workbook
         """
         for plant in self.CONFIG_DATA["plants"]:
             if plant["code"] == self.CONFIG_DATA['activePlantCode']:
                 for index, product in enumerate(plant["materials"]["data"]):
                     if product["name"] == material:
                         return plant["materials"]["data"][index]
+
+    def get_wb_path(self, material) -> str:
+        """
+        Given a material, get its absolute workbook path
+        \n
+        Params
+        \tmaterial (str): the name of the material
+        \n
+        Returns
+        \t\t path (str): the absolute path to the workbook
+        """
+        is_raw_material = self.get_material_data(material)['isRawMaterial']
+        
+        for plant in self.CONFIG_DATA["plants"]:
+            if plant["code"] == self.CONFIG_DATA['activePlantCode']:
+                if is_raw_material:
+                    return plant["materials"]["rawMatWbPathAbs"]
+                else:
+                    return plant["materials"]["productsWbPathAbs"]
