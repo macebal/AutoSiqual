@@ -24,7 +24,7 @@ class ExcelParserCAT(ExcelParserAbstract):
             wb = openpyxl.load_workbook(wb_path, read_only=True)
             ws = wb[sheet_name]
         except:
-            Exception(f"No se encuentra el archivo {wb_path} o no existe una hoja con el nombre {sheet_name} allí.")
+            raise Exception(f"No se encuentra el archivo {wb_path} o no existe una hoja con el nombre {sheet_name} allí.")
 
         column_numbers = {}
 
