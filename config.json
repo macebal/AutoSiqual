@@ -1,0 +1,111 @@
+{
+    "delayBetweenCommands": 0.5,
+    "delayBetweenScreens": 2.5,
+    "activePlantCode": "CAT",
+    "plants": [
+        {
+            "name": "Catamarca",
+            "code": "CAT",
+            "materials": {
+                "productsWbPathAbs": "\\\\10.15.24.32\\FC_UN_PROC y CALID\\01-Calidad\\Base de Datos Productos\\Base de datos análisis de productos.xlsx",
+                "rawWbMatPathAbs": "\\\\10.15.24.32\\Control de Calidad\\Datos Laboratorio\\Calculos KPI.xlsm",    
+                "data": [
+                    {
+                        "name": "CPC30",
+                        "siqualName": "CPC30",
+                        "worksheetName": "CPC30 (D) ",
+                        "isRawMaterial": false,
+                        "columnsToInput": {
+                            "DATE": "Fecha",
+                            "CAOT": "CaO",
+                            "SIO2": "SiO2",
+                            "AL2O3": "Al2O3",
+                            "FE2O3": "Fe2O3",
+                            "MGO": "MgO",
+                            "SO3": "SO3",
+                            "K2O": "K2O",
+                            "NA2O": "Na2O",
+                            "CL": "",
+                            "S2": "",
+                            "P2O5": "",
+                            "FLUOR": "",
+                            "CAOL": "Cal libre",
+                            "CO2": "CO2",
+                            "PF": "P.P.C.",
+                            "RICARB": "R.I.",
+                            "HUM": "",
+                            "G45": "R45 m  (%)",
+                            "G75": "R75 m  (%)",
+                            "SBA": "Blaine (m2/kg)",
+                            "MVOL": "Densidad Real (g/cm3)",
+                            "AGP": "Agua PN (%)",
+                            "IP": "Ppio. Fragüe",
+                            "FP": "Fin. Fragüe",
+                            "FALSO_FRAG": "",
+                            "EXAU": "Exp. (%)",
+                            "BARI": "P Litro (g/l)",
+                            "C_K": "",
+                            "C_P": "",
+                            "C_C": "",
+                            "C_S": "",
+                            "C_Y": "",
+                            "K": "",
+                            "P": "",
+                            "L": "",
+                            "S": "",
+                            "G": "",
+                            "MIN": "",
+                            "R12H": "",
+                            "R1": "",
+                            "R2": "2 días",
+                            "R3": "",
+                            "R7": "7 días",
+                            "R28":"",
+                            "AI": ""
+                        }
+                    },
+                    {
+                        "name": "CPC40",
+                        "siqualName": "CPC40",
+                        "worksheetName": "CPC40(D)",
+                        "isRawMaterial": false
+                    },
+                    {
+                        "name": "CPN40",
+                        "siqualName": "CPN40",
+                        "worksheetName": "CPN40(D)",
+                        "isRawMaterial": false
+                    },
+                    {
+                        "name": "CPN40 ARS",
+                        "siqualName": "CPN40ARS",
+                        "worksheetName": "CPN40(D)",
+                        "isRawMaterial": false
+                    },
+                    {
+                        "name": "Plasticor",
+                        "siqualName": "CIMALV",
+                        "worksheetName": "PLASTICOR (D)",
+                        "isRawMaterial": false
+                    },
+                    {
+                        "name": "Harina",
+                        "siqualName": "FAR",
+                        "worksheetName": "FARINHA",
+                        "isRawMaterial": true
+                    },
+                    {
+                        "name": "Clinker",
+                        "siqualName": "CLK1",
+                        "worksheetName": "CLINKER",
+                        "isRawMaterial": true
+                    }
+                ]
+            }
+        },
+        {
+            "name": "L'amalí",
+            "code": "LML"
+        }
+    ]
+}
