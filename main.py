@@ -9,15 +9,17 @@
 
 from datetime import datetime
 from distutils.command.config import config
+import imp
 import logging, sys
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import QSize
 import pyautogui
-from ExcelParser_CAT import ExcelParserCAT
+from PasteData import paste_data
 from config import ConfigParser
 from gui import Ui_MainWindow  # importing the ui
 from log import Ui_LogWindow
 from AutoSiqual import start_robot
+from excel_parser import ParserFactory
 
 class mainWindow(QtWidgets.QMainWindow):
 
@@ -47,11 +49,14 @@ class mainWindow(QtWidgets.QMainWindow):
         self.populate_fields()
 
         #Testing
-        test_date = datetime(2022,1,4)
-        parser = ExcelParserCAT()
-        data = parser.parse_products(test_date, "CPC30")
-        # json_dump(data, 'C:\\Users\\macebal\\Desktop\\Python\\AutoSiqual\\dump.json')
-
+        # plant_code, _ = self.config.get_active_plant_names()
+        # test_date = datetime(2022,1,4)
+        # factory = ParserFactory.ParserFactory()
+        # parser = factory.getParser(plant_code)
+        # data = parser.parse_products(test_date, "CPC30")
+        # paste_data(data,"CPC30")
+        # # json_dump(data, 'C:\\Users\\macebal\\Desktop\\Python\\AutoSiqual\\dump.json')
+        # print(data)
         self.ui.btn_start.clicked.connect(self.inputData)
         
         #initialize custom logger
@@ -89,7 +94,9 @@ class mainWindow(QtWidgets.QMainWindow):
             self.log.show()
 
             self.logger.info("********  AutoSiqual V2.0.0  ********")
-            #start_robot(material)
+            
+    #TODO: Add try/catch to handle exceptions on the import module
+            start_robot(material)
         else:
             QtWidgets.QMessageBox.warning(self, "Advertencia", "Seleccione un material válido.", QtWidgets.QMessageBox.Ok)
 

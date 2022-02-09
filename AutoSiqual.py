@@ -1,11 +1,10 @@
 import datetime
 import logging
-from PyQt5 import QtCore
 import pyautogui,ctypes
-
 import pyperclip
-
+from PasteData import paste_data, qt_sleep, click_image
 from config import ConfigParser
+from excel_parser.ParserFactory import ParserFactory
 
 def numlock_is_active():
     """
@@ -16,38 +15,7 @@ def numlock_is_active():
     VK_NUMLOCK = 0x90
     return bool(dll.GetKeyState(VK_NUMLOCK))
 
-def qt_sleep(seconds):
-    """
-    Create a sleep period that doesn't freeze the UI.
-    \n
-    Params:
-    \tseconds: the amount of seconds to sleep.
-    """
-    loop = QtCore.QEventLoop()
-    QtCore.QTimer.singleShot(seconds*1000, loop.quit)
-    loop.exec_()
 
-def click_image(image_name, index = 0):
-    """
-    Clicks the region onscreen that is equal to the provided one.
-    \n
-    Params:
-    \timage_name: The name and extension of an image located in the img folder
-    \tindex: If there is more than one result for that image, the index in the resulting list
-    """
-    logger = logging.getLogger('ui_logger')
-
-    path = 'img\\' + image_name
-    results = list(pyautogui.locateAllOnScreen(path))  # find all the images
-
-    if len(results) == 0:
-            logger.critical(f'No se encuentra el boton {image_name}. ¿La ventana está cerrada?')
-            logger.critical('El programa terminó abruptamente.')
-            qt_sleep(5)
-            exit(1)
-
-    coords = pyautogui.center(results[index])  # find the coordinates
-    pyautogui.click(coords[0], coords[1]) # click the image
 
 
 def start_robot(material):
@@ -64,6 +32,7 @@ def start_robot(material):
     #commands and how much time should it wait for the dialogs to open (in seconds) to account for the delay in the connection
     DELAY_BETWEEN_COMMANDS, DELAY_BETWEEN_SCREENS = config.get_delay_times()
     material_data = config.get_material_data(material)
+    plant_code, _ = config.get_active_plant_names()
 
     logger.info('Programa Iniciado - Tiene 10 segundos para hacer foco (maximizar la pantalla de SIQUAL)')
     
@@ -136,9 +105,17 @@ def start_robot(material):
     pyautogui.hotkey('shiftleft','end')
     qt_sleep(DELAY_BETWEEN_COMMANDS)
 
-    pyautogui.hotkey('ctrl','c')
+    pyautogui.hotkey('ctrl','c') #copy the date
     qt_sleep(DELAY_BETWEEN_COMMANDS)
+    
+    date = datetime.datetime.strptime(pyperclip.paste(), '%Y-%m-%d')
 
-    date = pyperclip.paste()
+    logger.info("Cargado datos desde el archivo Excel")
+    qt_sleep(0)
 
-    #TODO: Add try/catch to handle exceptions on the import module
+    factory = ParserFactory()
+    parser = factory.getParser(plant_code)
+    data = parser.parse_products(date, material)
+
+    paste_data(data, material)
+
