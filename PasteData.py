@@ -47,6 +47,8 @@ def paste_data(data, material):
     #These variables are defined in the config file and are used to configure how much time should the robot wait between input
     #commands and how much time should it wait for the dialogs to open (in seconds) to account for the delay in the connection
     DELAY_BETWEEN_COMMANDS, DELAY_BETWEEN_SCREENS = config.get_delay_times()
+    material_data = config.get_material_data(material)
+    position_in_generic_list =  material_data["genericPositionInList"]
 
     for date_data in data:
         current_date = datetime.datetime.strftime(date_data['DATE'], '%Y-%m-%d')
@@ -81,8 +83,8 @@ def paste_data(data, material):
         click_image('cuadroseleccionado_test.png', index = 1, confidence= 0.9)
         qt_sleep(DELAY_BETWEEN_SCREENS)
 
-        for i in range(7):
-            pyautogui.typewrite(['down']) #TODO: make this available in config.json
+        for i in range(position_in_generic_list):
+            pyautogui.typewrite(['down'])
 
         qt_sleep(DELAY_BETWEEN_SCREENS)
 

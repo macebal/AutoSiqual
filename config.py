@@ -94,11 +94,12 @@ class ConfigParser(object):
         \n
         Returns
         \tdictionary with the following keys:
-        \t\tname (str): the full name
-        \t\tsiqualName (str): the Siqual name
-        \t\tworksheetName (str): the name of the worksheet containing the data to input for that material
-        \t\tisRawMaterial (bool): if the material is a product or a raw material
-        \t\columnsToInput (dict): an object with key:value pairs of equivalencies between siqual codes and column names of the workbook
+        \t\tname (str): the full name\n
+        \t\tsiqualName (str): the Siqual name\n
+        \t\tworksheetName (str): the name of the worksheet containing the data to input for that material\n
+        \t\tisRawMaterial (bool): if the material is a product or a raw material\n
+        \t\tgenericPositionInList (int): the position of the generic form from the list in the "Creacion de Ensayo" window\n
+        \t\tcolumnsToInput (dict): an object with key:value pairs of equivalencies between siqual codes and column names of the workbook
         """
         for plant in self.CONFIG_DATA["plants"]:
             if plant["code"] == self.CONFIG_DATA['activePlantCode']:

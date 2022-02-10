@@ -95,8 +95,12 @@ class mainWindow(QtWidgets.QMainWindow):
 
             self.logger.info("********  AutoSiqual V2.0.0  ********")
             
-    #TODO: Add try/catch to handle exceptions on the import module
+        try:
             start_robot(material)
+        except Exception as e:
+            QtWidgets.QMessageBox.critical(self, "Error", str(e), QtWidgets.QMessageBox.Ok)
+            exit(1)
+            
         else:
             QtWidgets.QMessageBox.warning(self, "Advertencia", "Seleccione un material válido.", QtWidgets.QMessageBox.Ok)
 

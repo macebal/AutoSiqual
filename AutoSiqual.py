@@ -113,6 +113,7 @@ def start_robot(material):
     logger.info("Cargado datos desde el archivo Excel")
     qt_sleep(0)
 
+    
     factory = ParserFactory()
     parser = factory.getParser(plant_code)
     data = parser.parse_products(date, material)
