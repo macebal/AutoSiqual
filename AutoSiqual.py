@@ -1,123 +1,122 @@
-# AutoSiqual - Ingresa datos automaticamente en Siqual ;)
+import datetime
+import logging
+import pyautogui,ctypes
+import pyperclip
+from PasteData import paste_data, qt_sleep, click_image
+from config import ConfigParser
+from excel_parser.ParserFactory import ParserFactory
 
-import pyautogui, time, logging, PIL, datetime, pyperclip, ctypes
-from datetime import timedelta
-from ImportarDatos import importar_datos
-from PegarDatos import pegar_datos
-
-def numblock_activado():
-    #devuelve True si la tecla esta activada y False si no lo está
+def numlock_is_active():
+    """
+    Returns a boolean indicating whether the num lock key is pressed (true) or not (false)
+    """
+    #returns True if the NumLock key is activated
     dll = ctypes.WinDLL ("User32.dll")
     VK_NUMLOCK = 0x90
     return bool(dll.GetKeyState(VK_NUMLOCK))
 
-def clickear_imagen(nombre_imagen, indice = 0):
-    ruta = 'img\\' + nombre_imagen
-    ubicacion = list(pyautogui.locateAllOnScreen(ruta))  # busca todos las imagenes, el argumento confidence es por si varian algunos pixeles no encuentra algunas imagenes, default = 1 sino para un match exacto
-
-    if len(ubicacion) == 0:
-        logging.critical('No se encuentra el boton ' + nombre_imagen + '. ¿La ventana está cerrada?')
-        logging.critical('El programa terminó abruptamente.')
-        exit(1)
-
-    coordenadas = pyautogui.center(ubicacion[indice])  # busca las coordenadas
-    pyautogui.click(coordenadas[0], coordenadas[1]) # clickea la imagen
 
 
-logging.basicConfig(level=logging.INFO, datefmt="%Y-%m-%d %H:%M:%S", format='%(asctime)s [%(levelname)s] %(message)s')
 
-demoraEntreComandos = 0.5  # la demora en segundos que espera entre cada comando del teclado o mouse
-demoraEnAbrirPantallas = 1.5  # la demora en segundos que espera que abran las ventanas, depende de la conexion
+def start_robot(material):
+    """
+    Starts the robot from the Siqual's homescreen
+    \n
+    Params:
+    \tmaterial: the name of the material to input its data into Siqual
+    """
+    config = ConfigParser()
+    logger = logging.getLogger('ui_logger')
 
-cementos = ['CPC40', 'CPC30', 'CPN40', 'Plasticor']
+    #These variables are defined in the config file and are used to configure how much time should the robot wait between input
+    #commands and how much time should it wait for the dialogs to open (in seconds) to account for the delay in the connection
+    DELAY_BETWEEN_COMMANDS, DELAY_BETWEEN_SCREENS = config.get_delay_times()
+    material_data = config.get_material_data(material)
+    plant_code, _ = config.get_active_plant_names()
 
-logging.info('Programa Iniciado - Tiene 5 segundos para hacer foco (maximizar la pantalla de SIQUAL)')
-time.sleep(5)
-
-pyautogui.click  # para asegurar el foco
-
-#Si estaba activado la tecla Bloq Num la desactivo porque sino no deja copiar la fecha
-if (numblock_activado() == True):
-    logging.info('Tecla Bloq Num desactivada.')
-    pyautogui.press('numlock')
-
-logging.info('Abriendo pantalla de Creación/Modificación de RIC')
-pyautogui.hotkey('alt', 'e')  # Abre el menú de Gestión de Ensayos
-
-time.sleep(demoraEntreComandos)
-pyautogui.typewrite(['c', 'c', 'm'], interval=demoraEntreComandos)  # Abre la pantalla de creación de nuevo RIC
-
-logging.info('Abriendo ventana de selección de RIC')
-time.sleep(demoraEnAbrirPantallas)
-
-for cemento in cementos:
-
-    # clickea en el 2do boton de puntos suspensivos
-    clickear_imagen(nombre_imagen = 'puntosSuspensivos.png', indice = 1)
-
-    logging.info('Buscando ultimo RIC de %s', cemento)
-    time.sleep(demoraEnAbrirPantallas)
-
-    pyautogui.typewrite(['tab', 'tab'], interval=demoraEntreComandos)  # Me posiciono en el campo de fecha de inicio
-    pyautogui.hotkey('shiftleft','end') #la selecciono
-    pyautogui.press('del') # la borro
-    time.sleep(demoraEntreComandos)
-
-    fechaInicio = datetime.datetime.now() - timedelta(days=45)  # defino la fecha de inicio como 45 días antes de la fecha actual
-
-    pyautogui.typewrite(fechaInicio.strftime('%Y-%m-%d'))  # Tipeo la fecha, con formato yyyy-mm-dd
-    time.sleep(demoraEntreComandos)
-
-    pyautogui.typewrite(['tab', 'tab', 'enter'], interval=demoraEntreComandos)  # Apreto el boton buscar
-    time.sleep(demoraEnAbrirPantallas)
-
-    # busco el boton con la flecha apuntando hacia abajo de 'cod. producto' y lo clickeo
-    clickear_imagen(nombre_imagen = 'flecha.png', indice = 2)
-    time.sleep(demoraEnAbrirPantallas)
-
-    # busco el item con el nombre del cemento que me interesa (la imagen se llama asi tambien) y lo clickeo
-    clickear_imagen(cemento + '.png')
-    time.sleep(demoraEnAbrirPantallas)
-
-    # Presiono 5 veces la tecla av pag para ir al final de la tabla (ultima fecha) y presiono enter
-    pyautogui.typewrite(['pagedown', 'pagedown', 'pagedown', 'pagedown', 'pagedown'], interval=demoraEntreComandos)
-
-    # Clickeo en el cuadrado amarillo para seleccionar el ultimo RIC
-    clickear_imagen('casilleroSeleccionado.png')
-    time.sleep(demoraEntreComandos)
-
-    pyautogui.typewrite(['tab', 'tab', 'tab', 'tab', 'enter'], interval=demoraEntreComandos)  # Apreto el boton ok
-    logging.info('Cargado el RIC de la fecha ')
-
-    # Clickeo el botón 'Cargar Datos'
-    clickear_imagen('cargarDatos.png')
-    time.sleep(demoraEntreComandos)
-
-    #Presiono TAB 5 veces para posicionarme sobre la fecha
-    pyautogui.typewrite(['tab', 'tab', 'tab', 'tab', 'tab'], interval=demoraEntreComandos)
-
-    #selecciono y copio la fecha
-    pyautogui.hotkey('shiftleft','end')
-    time.sleep(demoraEntreComandos)
-
-    pyautogui.hotkey('ctrl','c')
-    time.sleep(demoraEntreComandos)
+    logger.info('Programa Iniciado - Tiene 10 segundos para hacer foco (maximizar la pantalla de SIQUAL)')
     
-    fecha = pyperclip.paste()
-    try:
-        fechaInicio = datetime.datetime.strptime(fecha, '%Y-%m-%d')
-        logging.info('Fecha encontrada y copiada.')
-        
-        logging.info('Cargando datos de Base de Datos Productos.xlsx')
-        listaDatos = importar_datos(fechaInicio, cemento)
+    for i in range(10,0,-1):
+        logger.info(f'{i}...')
+        qt_sleep(1)
 
-        try:
-            pegar_datos(listaDatos)
-            
-        except:
-            logging.warning('No hay datos para cargar de ' + cemento)
-    except:
-        logging.warning('La fecha no se copió correctamente. ¿La tecla Bloq Num está activada?')
-        break
-logging.info('Finalizado')
+    pyautogui.click #To ensure focus
+
+    #if numlock key is active, the following block disables it because otherwise the program won't input
+    #the commands correctly (it's a known bug atm)
+    if numlock_is_active():
+        logger.info('Tecla Bloq Num desactivada')
+        pyautogui.press('numlock')
+
+    logger.info('Abriendo pantalla de Creación/Modificación de RIC')
+    qt_sleep(DELAY_BETWEEN_COMMANDS)
+    
+    pyautogui.hotkey('alt', 'e')
+    pyautogui.typewrite(['c', 'c', 'm'], interval=DELAY_BETWEEN_COMMANDS)
+    qt_sleep(DELAY_BETWEEN_SCREENS)
+
+    logger.info('Abriendo ventana de selección de RIC')
+    qt_sleep(DELAY_BETWEEN_COMMANDS)
+    
+    click_image(image_name = 'puntosSuspensivos.png', index = 1)
+    qt_sleep(DELAY_BETWEEN_SCREENS)
+
+    logger.info(f'Buscando ultimo RIC de {material}')
+    qt_sleep(DELAY_BETWEEN_COMMANDS)
+
+    pyautogui.typewrite(['tab', 'tab'], interval=DELAY_BETWEEN_COMMANDS)
+    pyautogui.hotkey('shiftleft','end') #select the date
+    pyautogui.press('del') # delete it
+    qt_sleep(DELAY_BETWEEN_COMMANDS)
+
+    # Define the start date as 60 days before today
+    start_date = datetime.datetime.now() - datetime.timedelta(days=60)
+    pyautogui.typewrite(start_date.strftime('%Y-%m-%d'))  
+    qt_sleep(DELAY_BETWEEN_COMMANDS)
+
+    pyautogui.typewrite(['tab', 'tab', 'enter'], interval=DELAY_BETWEEN_COMMANDS)  # Press the search button
+    qt_sleep(DELAY_BETWEEN_SCREENS)
+
+    # find the button with the arrow facing down with the Product header and click it.
+    click_image(image_name = 'flecha.png', index = 2)
+    qt_sleep(DELAY_BETWEEN_SCREENS)
+
+    # find the item of the material (the image is called like that aswell)
+    click_image(image_name = f"{material_data['siqualName']}.png")
+    qt_sleep(DELAY_BETWEEN_SCREENS)
+
+    # Press 5 times the pagedwn key to go to the end of the table
+    pyautogui.typewrite(['pagedown', 'pagedown', 'pagedown', 'pagedown', 'pagedown', 'pagedown'], interval=DELAY_BETWEEN_COMMANDS)
+
+    # Click in the yellow square to select the last RIC
+    click_image(image_name ='casilleroSeleccionado.png')
+    qt_sleep(DELAY_BETWEEN_COMMANDS)
+
+    pyautogui.typewrite(['tab', 'tab', 'tab', 'tab', 'enter'], interval=DELAY_BETWEEN_COMMANDS)  # Press the ok button
+    
+    click_image(image_name ='cargarDatos.png')
+    logger.info(f'Cargado el ultimo RIC de {material}')
+    qt_sleep(DELAY_BETWEEN_COMMANDS)
+
+    #Position the cursor over the date
+    pyautogui.typewrite(['tab', 'tab', 'tab', 'tab', 'tab'], interval=DELAY_BETWEEN_COMMANDS)
+
+    #select and copy the date
+    pyautogui.hotkey('shiftleft','end')
+    qt_sleep(DELAY_BETWEEN_COMMANDS)
+
+    pyautogui.hotkey('ctrl','c') #copy the date
+    qt_sleep(DELAY_BETWEEN_COMMANDS)
+    
+    date = datetime.datetime.strptime(pyperclip.paste(), '%Y-%m-%d')
+
+    logger.info("Cargado datos desde el archivo Excel")
+    qt_sleep(0)
+
+    
+    factory = ParserFactory()
+    parser = factory.getParser(plant_code)
+    data = parser.parse_products(date, material)
+
+    paste_data(data, material)
 
