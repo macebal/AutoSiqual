@@ -69,7 +69,7 @@ class ExcelParserAbstract(ABC):
             return -1
 
     @abstractmethod
-    def parse_products(self, start_date, material) -> list:
+    def parse_materials(self, start_date, material) -> list:
         """
         Parses the corresponding excel file looking for the material data provided in the config.json file. It parses onwards from start_date
         \n

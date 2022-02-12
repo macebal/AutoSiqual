@@ -9,10 +9,12 @@
 
 from datetime import datetime
 from distutils.command.config import config
-import imp
+import json
 import logging, sys
+from pprint import pprint
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import QSize
+from matplotlib.font_manager import json_dump
 import pyautogui
 from PasteData import paste_data
 from config import ConfigParser
@@ -53,10 +55,12 @@ class mainWindow(QtWidgets.QMainWindow):
         # test_date = datetime(2022,1,4)
         # factory = ParserFactory.ParserFactory()
         # parser = factory.getParser(plant_code)
-        # data = parser.parse_products(test_date, "CPC30")
-        # paste_data(data,"CPC30")
-        # # json_dump(data, 'C:\\Users\\macebal\\Desktop\\Python\\AutoSiqual\\dump.json')
+        # data = parser.parse_materials(test_date, "Clinker")
         # print(data)
+        # paste_data(data,"CPC30")
+        
+        # json_dump(data, 'C:\\Users\\macebal\\Desktop\\Python\\AutoSiqual\\dump.json')
+        # exit(0)
         self.ui.btn_start.clicked.connect(self.inputData)
         
         #initialize custom logger
@@ -96,7 +100,8 @@ class mainWindow(QtWidgets.QMainWindow):
             self.logger.info("********  AutoSiqual V2.0.0  ********")
             
         try:
-            start_robot(material)
+            # start_robot(material)
+            pass
         except Exception as e:
             QtWidgets.QMessageBox.critical(self, "Error", str(e), QtWidgets.QMessageBox.Ok)
             exit(1)

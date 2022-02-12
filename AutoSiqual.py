@@ -15,9 +15,6 @@ def numlock_is_active():
     VK_NUMLOCK = 0x90
     return bool(dll.GetKeyState(VK_NUMLOCK))
 
-
-
-
 def start_robot(material):
     """
     Starts the robot from the Siqual's homescreen
@@ -116,7 +113,7 @@ def start_robot(material):
     
     factory = ParserFactory()
     parser = factory.getParser(plant_code)
-    data = parser.parse_products(date, material)
+    data = parser.parse_materials(date, material)
 
     paste_data(data, material)
 

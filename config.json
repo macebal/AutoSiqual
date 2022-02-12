@@ -7,8 +7,16 @@
             "name": "Catamarca",
             "code": "CAT",
             "materials": {
-                "productsWbPathAbs": "\\\\10.15.24.32\\FC_UN_PROC y CALID\\01-Calidad\\Base de Datos Productos\\Base de datos análisis de productos.xlsx",
-                "rawMatWbPathAbs": "\\\\10.15.24.32\\Control de Calidad\\Datos Laboratorio\\Calculos KPI.xlsm",    
+                "workbooks": {
+                    "products": {
+                        "pathAbs": "\\\\10.15.24.32\\FC_UN_PROC y CALID\\01-Calidad\\Base de Datos Productos\\Base de datos análisis de productos.xlsx",
+                        "headerRow": 4
+                    },
+                    "rawMaterials": {
+                        "pathAbs": "\\\\10.15.24.32\\Control de Calidad\\Datos Laboratorio\\Calculos KPI.xlsm",
+                        "headerRow": 1
+                    }
+                },  
                 "data": [
                     {
                         "name": "CPC30",
@@ -289,20 +297,49 @@
                         "name": "Harina",
                         "siqualName": "FAR",
                         "worksheetName": "FARINHA",
-                        "isRawMaterial": true
+                        "isRawMaterial": true,
+                        "genericPositionInList": 24,
+                        "columnsToInput": {
+                            "DATE": "Fecha",
+                            "AL2O3": "Al2O3",
+                            "CAOT": "CaO",
+                            "CC3S": "C3S meta",
+                            "FE2O3": "Fe2O3",
+                            "KFUI": "",
+                            "KFUIM": "",
+                            "PF": "PPC",
+                            "SIO2": "SiO2"
+                        }
                     },
                     {
                         "name": "Clinker",
                         "siqualName": "CLK1",
                         "worksheetName": "CLINKER",
-                        "isRawMaterial": true
+                        "isRawMaterial": true,
+                        "genericPositionInList": 22,
+                        "columnsToInput": {
+                            "DATE": "Fecha",
+                            "RICARB": 0,
+                            "HUM110": "",
+                            "PF250": "",
+                            "PF500": "",
+                            "PF950": "",
+                            "PF": 0,
+                            "AL2O3": "Al2O3",
+                            "CAOT": "CaO",
+                            "MGO": "MgO",
+                            "SIO2": "SiO2",
+                            "FE2O3": "Fe2O3",
+                            "SO3": "SO3",
+                            "MA": "",
+                            "MSP": "",
+                            "CAOL": "Cal Libre",
+                            "K2O": "K2O",
+                            "NA2O": "Na2O"
+                        }
                     }
                 ]
             }
-        },
-        {
-            "name": "L'amalí",
-            "code": "LML"
         }
     ]
 }

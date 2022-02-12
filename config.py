@@ -107,21 +107,21 @@ class ConfigParser(object):
                     if product["name"] == material:
                         return plant["materials"]["data"][index]
 
-    def get_wb_path(self, material) -> str:
+    def get_wb_data(self, material) -> str:
         """
-        Given a material, get its absolute workbook path
+        Given a material, get its workbook data
         \n
         Params
         \tmaterial (str): the name of the material
         \n
         Returns
-        \t\t path (str): the absolute path to the workbook
+        \t\t data (dict): A dictionary with a key "pathAbs" for the path and a key "headerRow" for the row of the headers
         """
         is_raw_material = self.get_material_data(material)['isRawMaterial']
         
         for plant in self.CONFIG_DATA["plants"]:
             if plant["code"] == self.CONFIG_DATA['activePlantCode']:
                 if is_raw_material:
-                    return plant["materials"]["rawMatWbPathAbs"]
+                    return plant["materials"]["workbooks"]["rawMaterials"]
                 else:
-                    return plant["materials"]["productsWbPathAbs"]
+                    return plant["materials"]["workbooks"]["products"]
