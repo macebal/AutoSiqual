@@ -14,11 +14,11 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_LogWindow(object):
     def setupUi(self, LogWindow):
         LogWindow.setObjectName("LogWindow")
-        LogWindow.resize(570, 150)
+        LogWindow.resize(570, 160)
         self.centralwidget = QtWidgets.QWidget(LogWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.log_text_edit = QtWidgets.QPlainTextEdit(self.centralwidget)
-        self.log_text_edit.setGeometry(QtCore.QRect(10, 5, 550, 140))
+        self.log_text_edit.setGeometry(QtCore.QRect(10, 5, 550, 146))
         self.log_text_edit.setTextInteractionFlags(QtCore.Qt.NoTextInteraction)
         self.log_text_edit.setObjectName("log_text_edit")
         LogWindow.setCentralWidget(self.centralwidget)

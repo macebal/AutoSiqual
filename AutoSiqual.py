@@ -1,4 +1,5 @@
-import datetime
+# import datetime
+from datetime import datetime, date, time, timedelta
 import logging
 import pyautogui,ctypes
 import pyperclip
@@ -30,6 +31,7 @@ def start_robot(material):
     DELAY_BETWEEN_COMMANDS, DELAY_BETWEEN_SCREENS = config.get_delay_times()
     material_data = config.get_material_data(material)
     plant_code, _ = config.get_active_plant_names()
+    is_raw_mat = material_data["isRawMaterial"]
 
     logger.info('Programa Iniciado - Tiene 10 segundos para hacer foco (maximizar la pantalla de SIQUAL)')
     
@@ -67,7 +69,7 @@ def start_robot(material):
     qt_sleep(DELAY_BETWEEN_COMMANDS)
 
     # Define the start date as 60 days before today
-    start_date = datetime.datetime.now() - datetime.timedelta(days=60)
+    start_date = datetime.now() - timedelta(days=60)
     pyautogui.typewrite(start_date.strftime('%Y-%m-%d'))  
     qt_sleep(DELAY_BETWEEN_COMMANDS)
 
@@ -110,7 +112,28 @@ def start_robot(material):
     logger.info("Cargado datos desde el archivo Excel")
     qt_sleep(0)
 
-    
+    if is_raw_mat:
+        #Since raw materials are loaded once every month, on the first days, one of two situations may arise:
+        # 1.- The last data point found is the last day of the month before last month (i.e. if we're in february, the last data point should be 31/12 before we enter the new data)
+        # 2.- The last data point found belongs to the last month (for example if we're in february and the last data point is 10/01). This means that the robot failed previously to input all data and must resume
+
+        now = datetime.now()
+
+        first_day_of_this_month = datetime.combine(datetime.today().replace(day=1), time())
+        last_day_of_last_month = first_day_of_this_month - timedelta(days=1)
+        first_day_of_last_month = last_day_of_last_month.replace(day=1)
+
+
+        time_from_last_data = now - date
+        expected_time_from_last_data = now - first_day_of_last_month - timedelta(days=1) #I would expect that the last data point found was the last day of 2 months ago
+        
+        if time_from_last_data.days < expected_time_from_last_data.days:
+            #if the robot stopped midway from the month, continue inputting data from there
+            pass
+        else:
+            #if not, start inputting on the first day of last month (by passing the previous day to the algorithm, hence the -1 days part)
+            date = first_day_of_last_month - timedelta(days=1)
+
     factory = ParserFactory()
     parser = factory.getParser(plant_code)
     data = parser.parse_materials(date, material)

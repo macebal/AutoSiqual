@@ -1,7 +1,4 @@
-
 import json
-from unittest.mock import DEFAULT
-
 from matplotlib.font_manager import json_load
 
 class ConfigParser(object):

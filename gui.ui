@@ -13,14 +13,18 @@
   <property name="windowTitle">
    <string>AutoSiqual</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>img/robot-face.png</normaloff>img/robot-face.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
       <x>25</x>
-      <y>25</y>
+      <y>10</y>
       <width>226</width>
-      <height>80</height>
+      <height>107</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -64,6 +68,22 @@
        </item>
       </layout>
      </item>
+     <item alignment="Qt::AlignHCenter">
+      <widget class="QCheckBox" name="chckbxDisplayLog">
+       <property name="font">
+        <font>
+         <family>Calibri</family>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Ver Registro</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
      <item>
       <widget class="QPushButton" name="btn_start">
        <property name="text">
@@ -84,10 +104,17 @@
     </rect>
    </property>
    <widget class="QMenu" name="menuArchivo">
+    <property name="geometry">
+     <rect>
+      <x>269</x>
+      <y>125</y>
+      <width>158</width>
+      <height>72</height>
+     </rect>
+    </property>
     <property name="title">
      <string>Archivo</string>
     </property>
-    <addaction name="actn_config"/>
     <addaction name="actn_exit"/>
    </widget>
    <widget class="QMenu" name="menuAyuda">
@@ -101,11 +128,19 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actn_exit">
+   <property name="icon">
+    <iconset>
+     <normaloff>img/cancel.png</normaloff>img/cancel.png</iconset>
+   </property>
    <property name="text">
     <string>Salir</string>
    </property>
   </action>
   <action name="actn_help">
+   <property name="icon">
+    <iconset>
+     <normaloff>img/information.png</normaloff>img/information.png</iconset>
+   </property>
    <property name="text">
     <string>Acerca de</string>
    </property>

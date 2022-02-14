@@ -5,18 +5,17 @@
 
 # pyuic5 "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\gui.ui" -o "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\gui.py"
 # pyuic5 "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\log.ui" -o "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\log.py"
+# pyuic5 "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\about.ui" -o "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\about.py"
 # pyinstaller main.py --onefile
 
 from datetime import datetime
 from distutils.command.config import config
 import json
 import logging, sys
-from pprint import pprint
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import QSize
-from matplotlib.font_manager import json_dump
 import pyautogui
-from PasteData import paste_data
+from about import Ui_About
 from config import ConfigParser
 from gui import Ui_MainWindow  # importing the ui
 from log import Ui_LogWindow
@@ -25,14 +24,16 @@ from excel_parser import ParserFactory
 
 class mainWindow(QtWidgets.QMainWindow):
 
+    VERSION = "2.1.0"
+
     def __init__(self):
 
         super(mainWindow, self).__init__()
-        self.setFixedSize(QSize(275, 150))
+        self.setFixedSize(QSize(275, 160))
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.setWindowTitle("AutoSiqual - v2.0.0")
+        self.setWindowTitle(f"AutoSiqual - v{self.VERSION}")
         self.setWindowFlags(
         QtCore.Qt.Window |
         QtCore.Qt.CustomizeWindowHint |
@@ -50,19 +51,11 @@ class mainWindow(QtWidgets.QMainWindow):
 
         self.populate_fields()
 
-        #Testing
-        # plant_code, _ = self.config.get_active_plant_names()
-        # test_date = datetime(2022,1,4)
-        # factory = ParserFactory.ParserFactory()
-        # parser = factory.getParser(plant_code)
-        # data = parser.parse_materials(test_date, "Clinker")
-        # print(data)
-        # paste_data(data,"CPC30")
-        
-        # json_dump(data, 'C:\\Users\\macebal\\Desktop\\Python\\AutoSiqual\\dump.json')
-        # exit(0)
-        self.ui.btn_start.clicked.connect(self.inputData)
-        
+        self.ui.btn_start.clicked.connect(self.input_data)
+        self.ui.actn_help.triggered.connect(self.open_about_wndw)
+        self.ui.actn_exit.triggered.connect(self.exit_app)
+        self.ui.chckbxDisplayLog.toggled.connect(self.toggle_log)
+
         #initialize custom logger
         self.log = LogWindow(self)
         self.logger = logging.getLogger('ui_logger')
@@ -86,7 +79,7 @@ class mainWindow(QtWidgets.QMainWindow):
             QtWidgets.QMessageBox.critical(self, "Error", str(e), QtWidgets.QMessageBox.Ok)
             exit(1)
 
-    def inputData(self):
+    def input_data(self):
         self.log.clear_log()
         material = str(self.ui.cb_product.currentText())
         
@@ -95,19 +88,43 @@ class mainWindow(QtWidgets.QMainWindow):
 
             self.move(w - self.size().width() - 25,h - self.size().height() - 75) # move the window to the bottom right corner
             self.log.move(self.pos().x() - self.log.size().width() - 2, self.pos().y()) #add the log window to the left of it
-            self.log.show()
 
-            self.logger.info("********  AutoSiqual V2.0.0  ********")
+            if self.ui.chckbxDisplayLog.isChecked():
+                self.log.show()
+
+            self.logger.info(f"********  AutoSiqual v{self.VERSION}  ********")
             
-        try:
-            # start_robot(material)
-            pass
-        except Exception as e:
-            QtWidgets.QMessageBox.critical(self, "Error", str(e), QtWidgets.QMessageBox.Ok)
-            exit(1)
+            try:
+                start_robot(material)
+            except Exception as e:
+                QtWidgets.QMessageBox.critical(self, "Error", str(e), QtWidgets.QMessageBox.Ok)
+                exit(1)
             
         else:
             QtWidgets.QMessageBox.warning(self, "Advertencia", "Seleccione un material válido.", QtWidgets.QMessageBox.Ok)
+
+    def open_about_wndw(self):
+        about = QtWidgets.QDialog()
+        about.ui = Ui_About()
+        about.ui.setupUi(about)
+        about.setWindowFlags(
+        QtCore.Qt.Window |
+        QtCore.Qt.CustomizeWindowHint |
+        QtCore.Qt.WindowTitleHint | # The first 3 flags are for the window to be on top of everything.
+        QtCore.Qt.WindowCloseButtonHint |
+        QtCore.Qt.WindowStaysOnTopHint
+        )
+        about.exec_()
+        about.show()
+
+    def exit_app(self):
+        exit(0)
+
+    def toggle_log(self):
+        if (self.ui.chckbxDisplayLog.isChecked()):
+            self.log.show()
+        else:
+            self.log.hide()
 
 class LogWindow(QtWidgets.QMainWindow, logging.Handler):
     def __init__(self, parent=None):
