@@ -5,7 +5,7 @@ from config import ConfigParser
 
 class ExcelParserCAT(ExcelParserAbstract):
     
-    STOP_DAYS_FROM_NOW = 1#10 #stop parsing when the date is X days from now (To account from missing data in the workbook)
+    STOP_DAYS_FROM_NOW = 10 #stop parsing when the date is X days from now (To account from missing data in the workbook)
 
     def __init__(self):
         pass        
