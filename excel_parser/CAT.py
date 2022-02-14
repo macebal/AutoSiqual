@@ -5,7 +5,7 @@ from config import ConfigParser
 
 class ExcelParserCAT(ExcelParserAbstract):
     
-    STOP_DAYS_FROM_NOW = 10 #stop parsing when the date is X days from now (To account from missing data in the workbook)
+    STOP_DAYS_FROM_NOW = 1#10 #stop parsing when the date is X days from now (To account from missing data in the workbook)
 
     def __init__(self):
         pass        
@@ -61,6 +61,7 @@ class ExcelParserCAT(ExcelParserAbstract):
                 #iterate over all the available keys in the `columns_dict`. If that key also exists in `column_numbers` it means that there is a value for that parameter
                 #if it doesn't, add a None to that position. There should be a value for each key provided in the config file
                 
+                is_valid_row = False #this variable remains False until it finds a value besides the date
                 for key in columns_dict.keys():
                     if key in column_numbers.keys():
                         cell_value = row[column_numbers.get(key)].value
@@ -85,8 +86,11 @@ class ExcelParserCAT(ExcelParserAbstract):
                     else:
                         row_data[key] = None
 
+                    if key != "DATE" and row_data[key] != None: 
+                        is_valid_row = True #This is True with at least 1 value besides the date
 
-                parsed_data.append(row_data)  
+                if is_valid_row:        
+                    parsed_data.append(row_data)  
 
         else:
             raise Exception(f"No hay valores de {material} para cargar")
