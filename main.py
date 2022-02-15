@@ -6,11 +6,8 @@
 # pyuic5 "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\gui.ui" -o "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\gui.py"
 # pyuic5 "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\log.ui" -o "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\log.py"
 # pyuic5 "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\about.ui" -o "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\about.py"
-# pyinstaller main.py --onefile
+# pyinstaller main.py --onefile --noconsole
 
-from datetime import datetime
-from distutils.command.config import config
-import json
 import logging, sys
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import QSize
@@ -21,6 +18,7 @@ from gui import Ui_MainWindow  # importing the ui
 from log import Ui_LogWindow
 from AutoSiqual import start_robot
 from excel_parser import ParserFactory
+from sys import exit
 
 class mainWindow(QtWidgets.QMainWindow):
 
@@ -98,6 +96,7 @@ class mainWindow(QtWidgets.QMainWindow):
                 start_robot(material)
             except Exception as e:
                 QtWidgets.QMessageBox.critical(self, "Error", str(e), QtWidgets.QMessageBox.Ok)
+                print(e.with_traceback())
                 exit(1)
             
         else:

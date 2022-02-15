@@ -2,6 +2,7 @@ import datetime
 import logging, pyautogui
 from config import ConfigParser
 from PyQt5 import QtCore
+from sys import exit
 
 def qt_sleep(seconds):
     """
