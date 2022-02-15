@@ -107,7 +107,7 @@ def start_robot(material):
     pyautogui.hotkey('ctrl','c') #copy the date
     qt_sleep(DELAY_BETWEEN_COMMANDS)
     
-    date = datetime.datetime.strptime(pyperclip.paste(), '%Y-%m-%d')
+    date = datetime.strptime(pyperclip.paste(), '%Y-%m-%d')
 
     logger.info("Cargado datos desde el archivo Excel")
     qt_sleep(0)
