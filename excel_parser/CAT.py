@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 import openpyxl
 from excel_parser.ExcelParserAbstract import ExcelParserAbstract
 from config import ConfigParser
@@ -20,6 +20,7 @@ class ExcelParserCAT(ExcelParserAbstract):
         HEADER_ROW = wb_data["headerRow"]
 
         sheet_name = material_data["worksheetName"]
+        isRawMaterial = material_data["isRawMaterial"]
 
         try:
             wb = openpyxl.load_workbook(wb_path, read_only=True, data_only = True)
@@ -42,10 +43,12 @@ class ExcelParserCAT(ExcelParserAbstract):
 
         date_column_index = super()._find_parameter_column(parameter=material_data["columnsToInput"]["DATE"],worksheet=ws, header_row=HEADER_ROW) + 1
 
-        end_date =  datetime(datetime.now().year, 
-                            datetime.now().month, 
-                            datetime.now().day) \
-                    - timedelta(days=self.STOP_DAYS_FROM_NOW)
+        if isRawMaterial:
+            first_day_of_this_month = datetime.combine(datetime.today().replace(day=1), time())
+            last_day_of_last_month = first_day_of_this_month - timedelta(days=1)
+            end_date = last_day_of_last_month
+        else:
+            end_date =  datetime(datetime.now().year, datetime.now().month, datetime.now().day) - timedelta(days=self.STOP_DAYS_FROM_NOW)
 
         start_row = super()._find_nearest_date(start_date, search_previous= True, column= date_column_index, worksheet= ws) + 1 #The row following the last available data in siqual
         end_row = super()._find_nearest_date(end_date, search_previous= True, column= date_column_index, worksheet= ws) 
@@ -72,7 +75,7 @@ class ExcelParserCAT(ExcelParserAbstract):
                         elif key == "BARI" and cell_value != None:
                             row_data[key] = cell_value / 1000
 
-                        elif key == "SBA" and cell_value != None:
+                        elif (key == "SBA" or key == "CC3S") and cell_value != None:
                             row_data[key] = round(cell_value)
                             
                         else:
