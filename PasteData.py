@@ -12,7 +12,7 @@ def qt_sleep(seconds):
     \tseconds: the amount of seconds to sleep.
     """
     loop = QtCore.QEventLoop()
-    QtCore.QTimer.singleShot(seconds*1000, loop.quit)
+    QtCore.QTimer.singleShot(int(seconds*1000), loop.quit)
     loop.exec_()
 
 def click_image(image_name, index = 0, confidence=1):
