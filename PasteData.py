@@ -77,11 +77,11 @@ def paste_data(data, material):
         qt_sleep(1.5 * DELAY_BETWEEN_SCREENS) #For the system's delay
 
         # click the Ensayos/Resultados button
-        click_image('ensayosResultados.png')
+        click_image('ensayosResultados.png', confidence=0.9)
         qt_sleep(3 * DELAY_BETWEEN_SCREENS) # 3 times the delay because of the slowness of the system
 
         pyautogui.click()
-        click_image('cuadroseleccionado_test.png', index = 1, confidence= 0.9)
+        click_image('cuadroseleccionado.png', index = 1, confidence= 0.9)
         qt_sleep(DELAY_BETWEEN_SCREENS)
 
         for i in range(position_in_generic_list):
@@ -119,14 +119,14 @@ def paste_data(data, material):
 
         qt_sleep(6)
         # click the close button
-        click_image(image_name= 'cerrar1.png', confidence = 0.8)
+        click_image(image_name= 'cerrar.png', confidence=0.9)
         qt_sleep(DELAY_BETWEEN_SCREENS)
        
         # clickea en el boton de Cerrar
-        click_image(image_name = 'cerrar2.png', confidence = 0.9)
+        click_image(image_name = 'cerrar.png', confidence = 0.9, index=1)
 
     logger.info("Se ha finalizado la carga con éxito")
     qt_sleep(DELAY_BETWEEN_SCREENS)
        
     # close the RIC window to return to the start
-    click_image(image_name = 'cerrar.png', confidence = 0.8)
+    click_image(image_name = 'cerrar.png', confidence = 0.9)
