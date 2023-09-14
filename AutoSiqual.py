@@ -93,7 +93,7 @@ def start_robot(material):
 
     pyautogui.typewrite(['tab', 'tab', 'tab', 'tab', 'enter'], interval=DELAY_BETWEEN_COMMANDS)  # Press the ok button
     
-    click_image(image_name ='cargarDatos.png')
+    click_image(image_name ='cargarDatos.png',confidence=0.95)
     logger.info(f'Cargado el ultimo RIC de {material}')
     qt_sleep(DELAY_BETWEEN_COMMANDS)
 
