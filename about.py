@@ -73,6 +73,6 @@ class Ui_About(object):
         _translate = QtCore.QCoreApplication.translate
         About.setWindowTitle(_translate("About", "Acerca De"))
         self.label.setText(_translate("About", "AutoSiqual"))
-        self.label_2.setText(_translate("About", "v2.2.0"))
+        self.label_2.setText(_translate("About", "v2.2.1"))
         self.label_3.setText(_translate("About", "Mariano Acebal - 2023"))
         self.label_4.setText(_translate("About", "github.com/macebal/AutoSiqual"))
