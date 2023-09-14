@@ -6,3 +6,6 @@ install:
 
 build:
 	pyinstaller main.py --onefile --noconsole
+
+run-dev:
+	python -m main
