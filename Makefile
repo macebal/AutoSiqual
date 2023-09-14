@@ -1,3 +1,5 @@
+.PHONY: build
+
 env:
 	source .env/Scripts/activate
 
