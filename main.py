@@ -22,7 +22,7 @@ from sys import exit
 
 class mainWindow(QtWidgets.QMainWindow):
 
-    VERSION = "2.2.1"
+    VERSION = "2.3.0"
 
     def __init__(self):
 

@@ -1,8 +1,8 @@
-# import datetime
-from datetime import datetime, date, time, timedelta
 import logging
-import pyautogui,ctypes
-import pyperclip
+import pyautogui
+import ctypes
+import pyclip
+from datetime import datetime,  time, timedelta
 from PasteData import paste_data, qt_sleep, click_image
 from config import ConfigParser
 from excel_parser.ParserFactory import ParserFactory
@@ -107,10 +107,15 @@ def start_robot(material):
     pyautogui.hotkey('ctrl','c') #copy the date
     qt_sleep(DELAY_BETWEEN_COMMANDS)
     
-    date = datetime.strptime(pyperclip.paste(), '%Y-%m-%d')
+    clipboard_text = pyclip.paste(text=True)
+    if clipboard_text:
+        date = datetime.strptime(clipboard_text, '%Y-%m-%d')
+    else:
+        logger.info("No se pudo copiar la fecha, no hay datos en el portapapeles.")
+        qt_sleep(5)
+        exit(1)
 
-    logger.info("Cargado datos desde el archivo Excel")
-    qt_sleep(0)
+    logger.info("Cargando datos desde el archivo Excel")
 
     if is_raw_mat:
         #Since raw materials are loaded once every month, on the first days, one of two situations may arise:
