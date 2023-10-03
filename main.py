@@ -10,19 +10,17 @@ from gui.log import Ui_LogWindow
 
 from src.config import ConfigParser
 from src.autosiqual import start_robot
+from src import __version__
 
 class mainWindow(QtWidgets.QMainWindow):
 
-    VERSION = "2.3.0"
-
     def __init__(self):
-
         super(mainWindow, self).__init__()
         self.setFixedSize(QtCore.QSize(275, 160))
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.setWindowTitle(f"AutoSiqual - v{self.VERSION}")
+        self.setWindowTitle(f"AutoSiqual - v{__version__}")
         self.setWindowFlags(
         QtCore.Qt.Window |
         QtCore.Qt.CustomizeWindowHint |
@@ -81,7 +79,7 @@ class mainWindow(QtWidgets.QMainWindow):
             if self.ui.chckbxDisplayLog.isChecked():
                 self.log.show()
 
-            self.logger.info(f"********  AutoSiqual v{self.VERSION}  ********")
+            self.logger.info(f"********  AutoSiqual v{__version__}  ********")
             
             try:
                 start_robot(material)
@@ -97,6 +95,7 @@ class mainWindow(QtWidgets.QMainWindow):
         about = QtWidgets.QDialog()
         about.ui = Ui_About()
         about.ui.setupUi(about)
+        about.ui.label_2.setText(__version__)
         about.setWindowFlags(
         QtCore.Qt.Window |
         QtCore.Qt.CustomizeWindowHint |
