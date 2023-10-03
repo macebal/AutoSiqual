@@ -1,37 +1,26 @@
-# AutoSiqual
-# v2.0.0
-# Mariano Acebal
-# 2021
-
-# pyuic5 "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\gui.ui" -o "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\gui.py"
-# pyuic5 "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\log.ui" -o "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\log.py"
-# pyuic5 "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\about.ui" -o "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\about.py"
-# pyinstaller main.py --onefile --noconsole
-
-import logging, sys
-from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtCore import QSize
+import logging
+import sys
 import pyautogui
-from about import Ui_About
-from config import ConfigParser
-from gui import Ui_MainWindow  # importing the ui
-from log import Ui_LogWindow
-from AutoSiqual import start_robot
-from excel_parser import ParserFactory
 from sys import exit
+from PyQt5 import QtWidgets, QtCore
+
+from gui.main import Ui_MainWindow
+from gui.about import Ui_About
+from gui.log import Ui_LogWindow
+
+from src.config import ConfigParser
+from src.autosiqual import start_robot
+from src import __version__
 
 class mainWindow(QtWidgets.QMainWindow):
 
-    VERSION = "2.3.0"
-
     def __init__(self):
-
         super(mainWindow, self).__init__()
-        self.setFixedSize(QSize(275, 160))
+        self.setFixedSize(QtCore.QSize(275, 160))
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.setWindowTitle(f"AutoSiqual - v{self.VERSION}")
+        self.setWindowTitle(f"AutoSiqual - v{__version__}")
         self.setWindowFlags(
         QtCore.Qt.Window |
         QtCore.Qt.CustomizeWindowHint |
@@ -90,7 +79,7 @@ class mainWindow(QtWidgets.QMainWindow):
             if self.ui.chckbxDisplayLog.isChecked():
                 self.log.show()
 
-            self.logger.info(f"********  AutoSiqual v{self.VERSION}  ********")
+            self.logger.info(f"********  AutoSiqual v{__version__}  ********")
             
             try:
                 start_robot(material)
@@ -106,6 +95,7 @@ class mainWindow(QtWidgets.QMainWindow):
         about = QtWidgets.QDialog()
         about.ui = Ui_About()
         about.ui.setupUi(about)
+        about.ui.label_2.setText(__version__)
         about.setWindowFlags(
         QtCore.Qt.Window |
         QtCore.Qt.CustomizeWindowHint |
@@ -141,10 +131,8 @@ class LogWindow(QtWidgets.QMainWindow, logging.Handler):
     def clear_log(self):
         self.edit.clear()
 
-app = QtWidgets.QApplication([])
-
-application = mainWindow()
-
-application.show()
-
-sys.exit(app.exec())
+if __name__ == "__main__":
+    app = QtWidgets.QApplication([])
+    application = mainWindow()
+    application.show()
+    sys.exit(app.exec())
