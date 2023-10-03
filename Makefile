@@ -16,3 +16,6 @@ run-dev:
 
 version-bump:
 	./bin/version_bump.sh $(version_bump_type)
+
+open-gui-designer:
+	./bin/open_qt_designer.sh
