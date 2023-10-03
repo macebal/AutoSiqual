@@ -9,10 +9,8 @@ install:
 	poetry install
 
 build:
-	pyinstaller main.py --onefile --noconsole
-	cp config.json dist/config.json
-	cp -fR img/ dist/
-
+	./bin/build.sh
+	
 run-dev:
 	python -m main
 
