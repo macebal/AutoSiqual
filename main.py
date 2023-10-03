@@ -1,24 +1,15 @@
-# AutoSiqual
-# v2.0.0
-# Mariano Acebal
-# 2021
-
-# pyuic5 "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\gui.ui" -o "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\gui.py"
-# pyuic5 "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\log.ui" -o "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\log.py"
-# pyuic5 "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\about.ui" -o "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\about.py"
-# pyinstaller main.py --onefile --noconsole
-
-import logging, sys
-from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtCore import QSize
+import logging
+import sys
 import pyautogui
-from about import Ui_About
-from config import ConfigParser
-from gui import Ui_MainWindow  # importing the ui
-from log import Ui_LogWindow
-from AutoSiqual import start_robot
-from excel_parser import ParserFactory
 from sys import exit
+from PyQt5 import QtWidgets, QtCore
+
+from gui.main import Ui_MainWindow
+from gui.about import Ui_About
+from gui.log import Ui_LogWindow
+
+from src.config import ConfigParser
+from src.autosiqual import start_robot
 
 class mainWindow(QtWidgets.QMainWindow):
 
@@ -27,7 +18,7 @@ class mainWindow(QtWidgets.QMainWindow):
     def __init__(self):
 
         super(mainWindow, self).__init__()
-        self.setFixedSize(QSize(275, 160))
+        self.setFixedSize(QtCore.QSize(275, 160))
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -141,10 +132,8 @@ class LogWindow(QtWidgets.QMainWindow, logging.Handler):
     def clear_log(self):
         self.edit.clear()
 
-app = QtWidgets.QApplication([])
-
-application = mainWindow()
-
-application.show()
-
-sys.exit(app.exec())
+if __name__ == "__main__":
+    app = QtWidgets.QApplication([])
+    application = mainWindow()
+    application.show()
+    sys.exit(app.exec())
