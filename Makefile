@@ -15,3 +15,6 @@ build:
 
 run-dev:
 	python -m main
+
+version-bump:
+	./bin/version_bump.sh $(version_bump_type)
