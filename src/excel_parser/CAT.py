@@ -76,7 +76,8 @@ class ExcelParserCAT(ExcelParserAbstract):
                             row_data[key] = cell_value / 1000
 
                         elif (key == "SBA" or key == "CC3S") and cell_value != None:
-                            row_data[key] = round(cell_value)
+                            decimals = 0 if key == "SBA" else 2
+                            row_data[key] = round(cell_value, decimals)
                             
                         else:
                             if str(cell_value).strip() != '*': #The * is sometimes used in the workbook to signal purposely missing data.
