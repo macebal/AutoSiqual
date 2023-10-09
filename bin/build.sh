@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#Delete previous files
+rm -r dist/
+
 #Run pyinstaller to create the executables in the dist/folder
 pyinstaller main.py --onefile --noconsole
 

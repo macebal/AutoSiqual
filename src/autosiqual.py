@@ -47,6 +47,7 @@ def start_robot(material):
         logger.info('Tecla Bloq Num desactivada')
         pyautogui.press('numlock')
 
+
     logger.info('Abriendo pantalla de Creación/Modificación de RIC')
     qt_sleep(DELAY_BETWEEN_COMMANDS)
     
@@ -81,7 +82,7 @@ def start_robot(material):
     qt_sleep(DELAY_BETWEEN_SCREENS)
 
     # find the item of the material (the image is called like that aswell)
-    click_image(image_name = f"{material_data['siqualName']}.png")
+    click_image(image_name = f"{material_data['siqualName']}.png", confidence=0.95)
     qt_sleep(DELAY_BETWEEN_SCREENS)
 
     # Press 5 times the pagedwn key to go to the end of the table
@@ -98,23 +99,40 @@ def start_robot(material):
     qt_sleep(DELAY_BETWEEN_COMMANDS)
 
     #Position the cursor over the date
-    pyautogui.typewrite(['tab', 'tab', 'tab', 'tab', 'tab'], interval=DELAY_BETWEEN_COMMANDS)
+    # pyautogui.typewrite(['tab', 'tab', 'tab', 'tab', 'tab'], interval=DELAY_BETWEEN_COMMANDS)
 
-    #select and copy the date
-    pyautogui.hotkey('shiftleft','end')
-    qt_sleep(DELAY_BETWEEN_COMMANDS)
+    # #select and copy the date
+    # pyautogui.hotkey('shiftleft','end')
+    # qt_sleep(DELAY_BETWEEN_COMMANDS)
 
-    pyautogui.hotkey('ctrl','c') #copy the date
-    qt_sleep(DELAY_BETWEEN_COMMANDS)
+    # pyautogui.hotkey('ctrl','c') #copy the date
+    # qt_sleep(DELAY_BETWEEN_COMMANDS)
     
-    clipboard_text = pyclip.paste(text=True)
-    if clipboard_text:
-        date = datetime.strptime(clipboard_text, '%Y-%m-%d')
-    else:
-        logger.info("No se pudo copiar la fecha, no hay datos en el portapapeles.")
+    # clipboard_text = pyclip.paste(text=True)
+    # if clipboard_text:
+    #     date = datetime.strptime(clipboard_text, '%Y-%m-%d')
+    # else:
+    #     logger.info("No se pudo copiar la fecha, no hay datos en el portapapeles.")
+    #     qt_sleep(5)
+    #     exit(1)
+    try:
+        str_date = pyautogui.prompt(
+            text="Introduzca la fecha inicial de toma de muestra de este RIC. El formato debe ser igual al que aparece en pantalla: YYYY-MM-DD",
+            title="Introduzca la fecha",
+            default="",
+        )
+        date = datetime.strptime(str_date, "%Y-%m-%d")
+        logger.info(f"Ha seleccionado la fecha {date}")
+        if numlock_is_active():
+            logger.info("Tecla Bloq Num desactivada")
+            pyautogui.press("numlock")
+    except Exception as e:
+        logger.info(
+            f"No se buscar la fecha. {str_date} no es una fecha valida o tiene el formato incorrecto"
+        )
         qt_sleep(5)
         exit(1)
-
+        
     logger.info("Cargando datos desde el archivo Excel")
 
     if is_raw_mat:

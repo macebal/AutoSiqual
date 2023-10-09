@@ -57,7 +57,7 @@ def paste_data(data, material):
         
         logger.info(f"Pegando datos de {current_date}")
 
-        click_image('copiarRIC.png')
+        click_image('copiarRIC.png', confidence=0.95)
 
         pyautogui.typewrite(['tab', 'tab', 'tab', 'tab', 'tab'], interval=DELAY_BETWEEN_COMMANDS)
         pyautogui.hotkey('shiftleft','end')
