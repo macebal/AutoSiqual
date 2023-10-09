@@ -82,7 +82,7 @@ def start_robot(material):
     qt_sleep(DELAY_BETWEEN_SCREENS)
 
     # find the item of the material (the image is called like that aswell)
-    click_image(image_name = f"{material_data['siqualName']}.png")
+    click_image(image_name = f"{material_data['siqualName']}.png", confidence=0.95)
     qt_sleep(DELAY_BETWEEN_SCREENS)
 
     # Press 5 times the pagedwn key to go to the end of the table
