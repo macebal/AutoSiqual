@@ -46,7 +46,7 @@ The resulting zip file can be found in the dist/ folder
 To bump the version, use the following command:
 
 ```
-make version-bump version_bump_type=<VERSION BUMP TYPE>
+make version-bump type=<VERSION BUMP TYPE>
 ```
 
 where `<VERSION BUMP TYPE>` can be for example "major", "minor", "patch", etc. For more information see: https://python-poetry.org/docs/cli/#version

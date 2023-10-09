@@ -15,7 +15,7 @@ run-dev:
 	python -m main
 
 version-bump:
-	./bin/version_bump.sh $(version_bump_type)
+	./bin/version_bump.sh $(type)
 
 open-gui-designer:
 	./bin/open_qt_designer.sh

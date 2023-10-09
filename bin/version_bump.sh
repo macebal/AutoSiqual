@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Update the version in poetry
-poetry version "${version_bump_type}"
+poetry version "${type}"
 
 # Get the new version from pyproject.toml
 new_version=$(poetry version --short)
