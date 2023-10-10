@@ -12,10 +12,7 @@ PyAutoGUI = "^0.9.54"
 opencv-python = "^4.8.1.78"
 PyQt5 = "^5.15.9"
 pyqt5-tools = "^5.15.9.3.3"
-pyclip = "^0.7.0"
 pyinstaller = "5.13.2"
-
-
 
 [build-system]
 requires = ["poetry-core"]
