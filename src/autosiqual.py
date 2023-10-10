@@ -1,7 +1,6 @@
 import logging
 import pyautogui
 import ctypes
-import pyclip
 from datetime import datetime, time, timedelta
 from src.paste_data import paste_data, qt_sleep, click_image
 from src.config import ConfigParser
