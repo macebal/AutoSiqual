@@ -75,7 +75,7 @@ class ExcelParserCAT(ExcelParserAbstract):
                         elif key == "BARI" and cell_value != None:
                             row_data[key] = cell_value / 1000
 
-                        elif (key == "SBA" or key == "CC3S") and cell_value != None:
+                        elif (key == "SBA" or key == "CC3S" or key == "CO2") and cell_value != None:
                             decimals = 0 if key == "SBA" else 2
                             row_data[key] = round(cell_value, decimals)
                             
