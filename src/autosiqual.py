@@ -56,8 +56,8 @@ def start_robot(material):
 
     logger.info('Abriendo ventana de selección de RIC')
     qt_sleep(DELAY_BETWEEN_COMMANDS)
-    
-    click_image(image_name = 'puntosSuspensivos.png', index = 1)
+
+    click_image(image_name="puntosSuspensivos.png", index=1, confidence=0.95)
     qt_sleep(DELAY_BETWEEN_SCREENS)
 
     logger.info(f'Buscando ultimo RIC de {material}')
