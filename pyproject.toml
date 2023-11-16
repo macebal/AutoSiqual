@@ -25,7 +25,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
-addopts = "-vvv --disable-warnings --store-durations --cov=src --numprocesses=4 --cov-report term-missing --cov-report annotate --cov-report=xml --no-cov-on-fail --max-worker-restart=1"
+addopts = "-vvv --disable-warnings --store-durations --cov=src --numprocesses=4 --cov-report term-missing --no-cov-on-fail --max-worker-restart=1"
 testpaths = [
     "tests",
 ]
