@@ -14,6 +14,38 @@ PyQt5 = "^5.15.9"
 pyqt5-tools = "^5.15.9.3.3"
 pyinstaller = "5.13.2"
 
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+pytest-cov = "^4.1.0"
+pytest-split = "^0.8.1"
+pytest-xdist = "^3.4.0"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+addopts = "-vvv --disable-warnings --store-durations --cov=src --numprocesses=4 --cov-report term-missing --cov-report annotate --cov-report=xml --no-cov-on-fail --max-worker-restart=1"
+testpaths = [
+    "tests",
+]
+log_cli = true
+log_cli_level = "INFO"
+log_cli_format = "%(message)s"
+
+[tool.coverage.run]
+branch = true
+source = ["src", "tests"]
+omit = ["*__init__*", "*__pycache__*", ".pytest_cache/*", "*.egg-info/*", ".vscode/*", ".test_durations", "docs/*", "build/*", "dist/*", "scripts/*", "tests/*", "*.json", "*.circleci/*", "*.github/*", "*.test_durations", "*.gitignore", "*.gitattributes", "setup.py", "setup.cfg", "requirements.txt", "requirements-dev.txt", "README.rst", "README.md", "Makefile", "Dockerfile", "docker-compose.yml", "test-results/**", "poetry.lock", "pyproject.toml", ".gitignore", ".dockerignore", "*test_*"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "pragma: no cover",
+  "def __repr__",
+  "def __str__",
+  "raise AssertionError",
+  "raise NotImplementedError",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+  "if typing.TYPE_CHECKING:"
+]

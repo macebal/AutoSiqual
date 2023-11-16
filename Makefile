@@ -12,7 +12,10 @@ build:
 	./bin/build.sh
 	
 run-dev:
-	python -m main
+	poetry run python -m main
+
+test:
+	poetry run pytest
 
 version-bump:
 	./bin/version_bump.sh $(type)
