@@ -1,0 +1,2 @@
+class DateNotFoundError(Exception):
+    pass
