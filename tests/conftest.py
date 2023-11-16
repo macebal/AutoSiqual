@@ -4,7 +4,7 @@ import pytest
 DATES_WORKBOOK_PATH = "tests/data/dates.xlsx"
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="session")
 def load_dates_sheet():
     wb = openpyxl.load_workbook(DATES_WORKBOOK_PATH, read_only=True, data_only=True)
     ws = wb["Sheet1"]
