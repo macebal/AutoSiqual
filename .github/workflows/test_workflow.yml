@@ -38,6 +38,10 @@ jobs:
         run: |          
           poetry install --no-interaction --all-extras
 
+      - name: Configure path
+        run: |
+          export PYTHONPATH="$PYTHONPATH:$PWD"
+
       - name: Run test scripts
         run: |
           poetry run pytest
