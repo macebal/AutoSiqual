@@ -1,6 +1,12 @@
 import json
 from typing import Self
-from pydantic import BaseModel as pydantic_BaseModel, Field, ConfigDict, ValidationError
+from pydantic import (
+    BaseModel as pydantic_BaseModel,
+    Field,
+    ConfigDict,
+    ValidationError,
+    model_validator,
+)
 from pydantic.alias_generators import to_camel
 
 
@@ -37,6 +43,11 @@ class Materials(BaseModel):
     workbooks: Workbook
     data: list[Data]
 
+    def get_material_data_from_name(self, name: str) -> Data:
+        for item in self.data:
+            if item.name == name:
+                return item
+
 
 class Plant(BaseModel):
     name: str = ""
@@ -49,6 +60,20 @@ class UserConfig(BaseModel):
     delay_between_screens: float = Field(default=2.5)
     active_plant_code: str
     plants: list[Plant]
+    active_plant: Plant | None = None
+
+    @model_validator(mode="after")
+    def check_passwords_match(self) -> None:
+        for plant in self.plants:
+            if plant.code == self.active_plant_code:
+                self.active_plant = plant
+                break
+
+        if not self.active_plant_code:
+            raise ValidationError(
+                f"El codigo de la planta activa {self.active_plant_code} "
+                "no coincide con ninguna de las plantas declaradas"
+            )
 
     @classmethod
     def from_json(cls, filename: str = "config.json") -> Self:
