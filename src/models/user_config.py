@@ -63,7 +63,7 @@ class UserConfig(BaseModel):
     active_plant: Plant | None = None
 
     @model_validator(mode="after")
-    def check_passwords_match(self) -> None:
+    def check_active_plant_code_exists(self) -> None:
         for plant in self.plants:
             if plant.code == self.active_plant_code:
                 self.active_plant = plant
