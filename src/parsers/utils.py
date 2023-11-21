@@ -34,7 +34,7 @@ def find_date_row(date: datetime, worksheet: Any, column: int) -> int:
                 return cell.row
     else:
         raise DateNotFoundError(
-            f"La fecha {date.strftime('%d/%m/%Y')} no se encuentra en la columna {column} de la hoja {worksheet.title}"
+            f"La fecha {date} no se encuentra en la columna {column} de la hoja {worksheet.title}"
         )
 
 
