@@ -1,9 +1,7 @@
-from datetime import datetime, timedelta, time
-from typing import Callable
 import logging
 import openpyxl
-
-from src.config import ConfigParser
+from datetime import datetime, timedelta
+from typing import Callable
 from src.exceptions import ParameterNotFoundError
 from src.models.user_config import UserConfig
 from src.parsers.utils import find_nearest_date, find_parameter_column
@@ -76,21 +74,54 @@ def excel_parser_cat(start_date: datetime, material: str):
         end_date = today - timedelta(days=STOP_DAYS_FROM_NOW)
 
     # The starting row is the one following the last available data in siqual
-    start_row = (
-        find_nearest_date(
-            start_date,
-            search_previous=True,
-            column=column_numbers["DATE"],
-            worksheet=ws,
-        )
-        + 1
-    )
+    start_row = find_nearest_date(start_date, ws, column=column_numbers["DATE"]) + 1
     end_row = find_nearest_date(
-        end_date, search_previous=True, column=column_numbers["DATE"], worksheet=ws
+        end_date, ws, column=column_numbers["DATE"], search_previous=True
     )
+
+    if start_row > end_row:
+        raise Exception(f"No hay valores de {material} para cargar")
+
+    parsed_data = []
+
+    # only iterate over the needed range to accelerate the algorithm
+    for row in ws.iter_rows(min_row=start_row, max_row=end_row):
+        row_data = {}
+
+        # iterate over all the available keys in the `columns_dict`. If that key also exists in `column_numbers` it means that there is a value for that parameter
+        # if it doesn't, add a None to that position. There should be a value for each key provided in the config file
+
+        # The following flag remains False until it finds a value besides the date
+        is_valid_row = False
+
+        for key in columns_to_input:
+            if key in column_numbers:
+                cell_value = row[column_numbers[key] - 1].value
+
+                if cell_value is not None:
+                    if key in ["IP", "FP"]:
+                        # for the setting times, transform from hh:mm format to mm
+                        row_data[key] = cell_value.hour * 60 + cell_value.minute
+
+                    elif key == "BARI":
+                        row_data[key] = cell_value / 1000
+
+                    elif key in ["SBA", "CC3S", "CO2"]:
+                        decimals = 0 if key == "SBA" else 2
+                        row_data[key] = round(cell_value, decimals)
+                    else:
+                        # The * is sometimes used in the workbook to signal purposely missing data.
+                        if str(cell_value).strip() != "*":
+                            row_data[key] = cell_value
+                        else:
+                            row_data[key] = None
+
+                if key != "DATE" and row_data.get(key) is not None:
+                    # This is True with at least 1 value besides the date in row_data
+                    is_valid_row = True
+
+        if is_valid_row:
+            parsed_data.append(row_data)
 
     wb.close()
-
-
-if __name__ == "__main__":
-    excel_parser_cat(None, "Clinker")
+    return parsed_data
