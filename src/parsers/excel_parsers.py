@@ -12,6 +12,26 @@ LOGGER = logging.getLogger("ui_logger")
 
 
 def get_excel_parser(plant_code: str) -> Callable[[datetime, str], list[dict]]:
+    """Given a plant code, it returns a parser
+
+    Parameters
+    ----------
+    plant_code : str
+        The plant code
+
+    Returns
+    -------
+    Callable[[datetime, str], list[dict]]
+        The parser, which takes a datetime object as parameter (start date), a str representing the
+        material and returns a list of dicts
+
+    Raises
+    ------
+    ValueError
+        If the plant code is not valid
+
+    """
+
     parser = None
     match plant_code:
         case "CAT":
@@ -23,7 +43,30 @@ def get_excel_parser(plant_code: str) -> Callable[[datetime, str], list[dict]]:
     return parser
 
 
-def excel_parser_cat(start_date: datetime, material: str):
+def excel_parser_cat(start_date: datetime, material: str) -> list[dict]:
+    """Parses the Excel files related to the CAT plant code.
+
+    Parameters
+    ----------
+    start_date : datetime
+        The start date to start parsing (will not be included in the resulting dict)
+    material : str
+        The material name
+
+    Returns
+    -------
+    list[dict]
+        A list of dicts where each element represents a row. The keys are taken from the config models
+
+    Raises
+    ------
+    IOError
+        If there is a problem opening the Excel file
+    Exception
+        If there are no values to return
+
+    """
+
     config = UserConfig.from_json()
     material_data = config.active_plant.materials.get_material_data_from_name(material)
     is_raw_material = material_data.is_raw_material
