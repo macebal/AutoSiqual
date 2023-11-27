@@ -146,6 +146,6 @@ def start_robot(material):
         end_date = today - timedelta(days=STOP_DAYS_FROM_NOW)
 
     parser = get_excel_parser(plant_code)
-    data = parser.parse_materials(date, end_date, material)
+    parsed_data = parser(date, end_date, material)
 
-    paste_data(data, material)
+    paste_data(parsed_data, material)
