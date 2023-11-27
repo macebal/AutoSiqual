@@ -43,15 +43,24 @@ def get_excel_parser(plant_code: str) -> Callable[[datetime, str], list[dict]]:
     return parser
 
 
-def excel_parser_cat(start_date: datetime, material: str) -> list[dict]:
+def excel_parser_cat(
+    start_date: datetime,
+    end_date: datetime,
+    material: str,
+    config: UserConfig | None = None,
+) -> list[dict]:
     """Parses the Excel files related to the CAT plant code.
 
     Parameters
     ----------
     start_date : datetime
-        The start date to start parsing (will not be included in the resulting dict)
+        The start date to start parsing, will not be included in the resulting dict.
+    start_date : datetime
+        The end date to finish parsing, will be included in the resulting dict.
     material : str
-        The material name
+        The material name.
+    config : UserConfig | None, optional
+        An initialized config model, by default None
 
     Returns
     -------
@@ -67,7 +76,7 @@ def excel_parser_cat(start_date: datetime, material: str) -> list[dict]:
 
     """
 
-    config = UserConfig.from_json()
+    config = config or UserConfig.from_json()
     material_data = config.active_plant.materials.get_material_data_from_name(material)
     is_raw_material = material_data.is_raw_material
 
@@ -110,11 +119,11 @@ def excel_parser_cat(start_date: datetime, material: str) -> list[dict]:
 
     today = datetime.today().replace(hour=0, minute=0, second=0, microsecond=0)
 
-    if is_raw_material:
-        # end date is the last day of last month
-        end_date = today.replace(day=1) - timedelta(days=1)
-    else:
-        end_date = today - timedelta(days=STOP_DAYS_FROM_NOW)
+    # if is_raw_material:
+    #     # end date is the last day of last month
+    #     end_date = today.replace(day=1) - timedelta(days=1)
+    # else:
+    #     end_date = today - timedelta(days=STOP_DAYS_FROM_NOW)
 
     # The starting row is the one following the last available data in siqual
     start_row = find_nearest_date(start_date, ws, column=column_numbers["DATE"]) + 1
@@ -141,7 +150,7 @@ def excel_parser_cat(start_date: datetime, material: str) -> list[dict]:
             if key in column_numbers:
                 cell_value = row[column_numbers[key] - 1].value
 
-                if cell_value is not None:
+                if cell_value is not None and cell_value != "":
                     if key in ["IP", "FP"]:
                         # for the setting times, transform from hh:mm format to mm
                         row_data[key] = cell_value.hour * 60 + cell_value.minute
@@ -162,6 +171,11 @@ def excel_parser_cat(start_date: datetime, material: str) -> list[dict]:
                 if key != "DATE" and row_data.get(key) is not None:
                     # This is True with at least 1 value besides the date in row_data
                     is_valid_row = True
+
+            elif key in constant_parameters.keys():
+                row_data[key] = constant_parameters[key]
+            else:
+                row_data[key] = None
 
         if is_valid_row:
             parsed_data.append(row_data)
