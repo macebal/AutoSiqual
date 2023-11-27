@@ -6,12 +6,12 @@ from src.exceptions import ParameterNotFoundError
 from src.models.user_config import UserConfig
 from src.parsers.utils import find_nearest_date, find_parameter_column
 
-STOP_DAYS_FROM_NOW = 10  # stop parsing when the date is X days from now (To account from missing data in the workbook)
-
 LOGGER = logging.getLogger("ui_logger")
 
 
-def get_excel_parser(plant_code: str) -> Callable[[datetime, str], list[dict]]:
+def get_excel_parser(
+    plant_code: str,
+) -> Callable[[datetime, datetime, str], list[dict]]:
     """Given a plant code, it returns a parser
 
     Parameters
@@ -21,9 +21,9 @@ def get_excel_parser(plant_code: str) -> Callable[[datetime, str], list[dict]]:
 
     Returns
     -------
-    Callable[[datetime, str], list[dict]]
-        The parser, which takes a datetime object as parameter (start date), a str representing the
-        material and returns a list of dicts
+    Callable[[datetime, datetime, str], list[dict]]
+        The parser, which takes 2 datetime objects as parameters (start and end date)
+        and a str representing the material and returns a list of dicts
 
     Raises
     ------
@@ -116,14 +116,6 @@ def excel_parser_cat(
             else:
                 # if there is a number, add it as a constant to input that instead of the would be cell value later on
                 constant_parameters[k] = v
-
-    today = datetime.today().replace(hour=0, minute=0, second=0, microsecond=0)
-
-    # if is_raw_material:
-    #     # end date is the last day of last month
-    #     end_date = today.replace(day=1) - timedelta(days=1)
-    # else:
-    #     end_date = today - timedelta(days=STOP_DAYS_FROM_NOW)
 
     # The starting row is the one following the last available data in siqual
     start_row = find_nearest_date(start_date, ws, column=column_numbers["DATE"]) + 1

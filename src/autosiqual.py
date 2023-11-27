@@ -4,7 +4,10 @@ import ctypes
 from datetime import datetime, time, timedelta
 from src.paste_data import paste_data, qt_sleep, click_image
 from src.config import ConfigParser
-from src.excel_parser.ParserFactory import ParserFactory
+from parsers.excel_parsers import get_excel_parser
+
+STOP_DAYS_FROM_NOW = 10  # stop parsing when the date is X days from now (To account from missing data in the workbook)
+
 
 def numlock_is_active():
     """
@@ -131,34 +134,18 @@ def start_robot(material):
         )
         qt_sleep(5)
         exit(1)
-        
+
     logger.info("Cargando datos desde el archivo Excel")
 
+    today = datetime.today().replace(hour=0, minute=0, second=0, microsecond=0)
+
     if is_raw_mat:
-        #Since raw materials are loaded once every month, on the first days, one of two situations may arise:
-        # 1.- The last data point found is the last day of the month before last month (i.e. if we're in february, the last data point should be 31/12 before we enter the new data)
-        # 2.- The last data point found belongs to the last month (for example if we're in february and the last data point is 10/01). This means that the robot failed previously to input all data and must resume
+        # end date is the last day of last month
+        end_date = today.replace(day=1) - timedelta(days=1)
+    else:
+        end_date = today - timedelta(days=STOP_DAYS_FROM_NOW)
 
-        now = datetime.now()
-
-        first_day_of_this_month = datetime.combine(datetime.today().replace(day=1), time())
-        last_day_of_last_month = first_day_of_this_month - timedelta(days=1)
-        first_day_of_last_month = last_day_of_last_month.replace(day=1)
-
-
-        time_from_last_data = now - date
-        expected_time_from_last_data = now - first_day_of_last_month - timedelta(days=1) #I would expect that the last data point found was the last day of 2 months ago
-        
-        if time_from_last_data.days < expected_time_from_last_data.days:
-            #if the robot stopped midway from the month, continue inputting data from there
-            pass
-        else:
-            #if not, start inputting on the first day of last month (by passing the previous day to the algorithm, hence the -1 days part)
-            date = first_day_of_last_month - timedelta(days=1)
-
-    factory = ParserFactory()
-    parser = factory.getParser(plant_code)
-    data = parser.parse_materials(date, material)
+    parser = get_excel_parser(plant_code)
+    data = parser.parse_materials(date, end_date, material)
 
     paste_data(data, material)
-
