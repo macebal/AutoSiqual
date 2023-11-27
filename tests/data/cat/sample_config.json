@@ -9,7 +9,7 @@
       "materials": {
         "workbooks": {
           "products": {
-            "pathAbs": "\\\\10.15.24.32\\FC_UN_PROC y CALID\\01-Calidad\\Base de Datos Productos\\Base de datos análisis de productos.xlsx",
+            "pathAbs": "tests/data/cat/products.xlsx",
             "headerRow": 4
           },
           "rawMaterials": {

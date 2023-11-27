@@ -1,7 +1,7 @@
-from parsers.excel_parsers import excel_parser_cat
 import pytest
-from models.user_config import UserConfig
 from datetime import datetime
+from models.user_config import UserConfig
+from parsers.excel_parsers import excel_parser_cat
 
 
 @pytest.mark.parametrize(
@@ -17,6 +17,10 @@ from datetime import datetime
             id="Fecha de inicio mayor a fecha de fin",
         ),
         ("Harina", datetime(2023, 9, 18), datetime(2023, 10, 31), 40),
+        ("CPC40", datetime(2023, 1, 2), datetime(2023, 2, 22), 44),
+        ("CPC30", datetime(2023, 7, 12), datetime(2023, 7, 31), 16),
+        ("Plasticor", datetime(2023, 3, 8), datetime(2023, 6, 9), 75),
+        ("CPN40", datetime(2023, 7, 12), datetime(2023, 7, 24), 10),
     ],
 )
 def test_parser_cat(material_name, start_date, end_date, expected_items):

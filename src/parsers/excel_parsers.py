@@ -150,23 +150,26 @@ def excel_parser_cat(
             if key in column_numbers:
                 cell_value = row[column_numbers[key] - 1].value
 
-                if cell_value is not None and cell_value != "":
-                    if key in ["IP", "FP"]:
-                        # for the setting times, transform from hh:mm format to mm
-                        row_data[key] = cell_value.hour * 60 + cell_value.minute
+                if cell_value is None or cell_value == "":
+                    row_data[key] = None
+                    continue
 
-                    elif key == "BARI":
-                        row_data[key] = cell_value / 1000
+                if key in ["IP", "FP"]:
+                    # for the setting times, transform from hh:mm format to mm
+                    row_data[key] = cell_value.hour * 60 + cell_value.minute
 
-                    elif key in ["SBA", "CC3S", "CO2"]:
-                        decimals = 0 if key == "SBA" else 2
-                        row_data[key] = round(cell_value, decimals)
+                elif key == "BARI":
+                    row_data[key] = cell_value / 1000
+
+                elif key in ["SBA", "CC3S", "CO2"]:
+                    decimals = 0 if key == "SBA" else 2
+                    row_data[key] = round(cell_value, decimals)
+                else:
+                    # The * is sometimes used in the workbook to signal purposely missing data.
+                    if str(cell_value).strip() != "*":
+                        row_data[key] = cell_value
                     else:
-                        # The * is sometimes used in the workbook to signal purposely missing data.
-                        if str(cell_value).strip() != "*":
-                            row_data[key] = cell_value
-                        else:
-                            row_data[key] = None
+                        row_data[key] = None
 
                 if key != "DATE" and row_data.get(key) is not None:
                     # This is True with at least 1 value besides the date in row_data
