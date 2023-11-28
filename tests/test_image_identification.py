@@ -1,4 +1,5 @@
 import pytest
+import os
 from unittest.mock import patch
 from PIL import Image
 
@@ -132,6 +133,8 @@ TEST_IMG_FOLDER_PATH = "tests/data/siqual_screenshots"
     ],
 )
 def test_clicks_images(monkeypatch, needle, haystack, expected_coords, params):
+    os.environ["DISPLAY"] = ":0"  # Fixes pyautogui error in ubuntu (GH actions)
+
     def fake_screenshot(*args, **kwargs):
         # Fake the pyscreeze screenshot function so it returns the previously saved image
         # instead of taking a screenshot
