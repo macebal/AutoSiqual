@@ -133,8 +133,6 @@ TEST_IMG_FOLDER_PATH = "tests/data/siqual_screenshots"
     ],
 )
 def test_clicks_images(monkeypatch, needle, haystack, expected_coords, params):
-    os.environ["DISPLAY"] = ":0"  # Fixes pyautogui error in ubuntu (GH actions)
-
     def fake_screenshot(*args, **kwargs):
         # Fake the pyscreeze screenshot function so it returns the previously saved image
         # instead of taking a screenshot
@@ -143,6 +141,8 @@ def test_clicks_images(monkeypatch, needle, haystack, expected_coords, params):
         return im
 
     monkeypatch.setattr("pyscreeze.screenshot", fake_screenshot)
+    # The following is a fix for a pyautogui error in ubuntu (GH actions)
+    monkeypatch.setattr("mouseinfo.MouseInfoWindow", lambda: None)
 
     with patch("pyautogui.click") as mocked_pyautogui_click:
         from paste_data import click_image
