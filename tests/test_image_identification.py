@@ -141,10 +141,11 @@ def test_clicks_images(monkeypatch, needle, haystack, expected_coords, params):
         return im
 
     monkeypatch.setattr("pyscreeze.screenshot", fake_screenshot)
-    # The following is a fix for a pyautogui error in ubuntu (GH actions)
-    monkeypatch.setattr("mouseinfo.MouseInfoWindow", lambda: None)
 
-    with patch("pyautogui.click") as mocked_pyautogui_click:
+    # Patching mouseinfo to avoid an error in GH actions
+    with patch("pyautogui.click") as mocked_pyautogui_click, patch(
+        "mouseinfo.MouseInfoWindow"
+    ):
         from paste_data import click_image
 
         click_image(needle, **params)
