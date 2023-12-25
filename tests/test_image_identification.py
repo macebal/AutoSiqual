@@ -3,10 +3,12 @@ import os
 from unittest.mock import patch
 from PIL import Image
 
+IN_GITHUB_ACTIONS = os.getenv("GITHUB_ACTIONS") == "true"
 
 TEST_IMG_FOLDER_PATH = "tests/data/siqual_screenshots"
 
 
+@pytest.mark.skipif(IN_GITHUB_ACTIONS, reason="Can't run pyautogui in headless systems")
 @pytest.mark.parametrize(
     "needle, haystack, expected_coords, params",
     [

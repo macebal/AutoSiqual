@@ -22,6 +22,3 @@ version-bump:
 
 open-gui-designer:
 	./bin/open_qt_designer.sh
-
-setup-ci:
-	./bin/setup-ci.sh
