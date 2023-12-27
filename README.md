@@ -39,9 +39,9 @@ make build
 
 The resulting zip file can be found in the dist/ folder
 
-**Note:** The build script attempts to use the `zip` command to zip the executable and related config files and images. If the `zip` command is not available, for example in windows using Git Bash, [these instructions](https://stackoverflow.com/a/55749636) must be followed first. Orsimply zip all the files and folders inside the dist/ folder manually.
+**Note:** The build script attempts to use the `zip` command to zip the executable and related config files and images. If the `zip` command is not available, for example in windows using Git Bash, [these instructions](https://stackoverflow.com/a/55749636) must be followed first. Or simply zip all the files and folders inside the dist/ folder manually.
 
-## Bumping the version
+## Changing the version
 
 To bump the version, use the following command:
 
@@ -50,3 +50,11 @@ make version-bump type=<VERSION BUMP TYPE>
 ```
 
 where `<VERSION BUMP TYPE>` can be for example "major", "minor", "patch", etc. For more information see: https://python-poetry.org/docs/cli/#version
+
+## Running unit tests
+
+To run the unit tests, use the following command:
+
+```
+make test
+```
