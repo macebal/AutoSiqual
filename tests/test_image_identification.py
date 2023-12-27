@@ -149,4 +149,6 @@ def test_clicks_images(monkeypatch, needle, haystack, expected_coords, params):
 
         click_image(needle, **params)
 
+        # If click_image is called, it means that pyautogui found the image at the expected
+        # coords
         mocked_pyautogui_click.assert_called_once_with(*expected_coords)
