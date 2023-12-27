@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "AutoSiqual"
-version = "2.4.5"
+version = "2.4.6"
 description = "A standalone application to automate data input into the Siqual software."
 authors = ["Mariano <macebal@outlook.com.ar>"]
 readme = "README.md"
