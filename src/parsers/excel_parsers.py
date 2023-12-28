@@ -1,6 +1,6 @@
 import logging
 import openpyxl
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Callable
 from src.exceptions import ParameterNotFoundError
 from src.models.user_config import UserConfig
@@ -90,7 +90,7 @@ def excel_parser_cat(
     try:
         wb = openpyxl.load_workbook(wb_file.path_abs, read_only=True, data_only=True)
         ws = wb[sheet_name]
-    except Exception as e:
+    except Exception:
         raise IOError(
             f"No se encuentra el archivo {wb_file.path_abs} o no existe una hoja con el nombre {sheet_name} allí."
         )
@@ -103,7 +103,7 @@ def excel_parser_cat(
 
     for k, v in columns_to_input.items():
         if v != "":
-            if type(v) == str:
+            if isinstance(v,str):
                 try:
                     column_index = find_parameter_column(
                         parameter=v, worksheet=ws, header_row=wb_file.header_row
@@ -119,9 +119,7 @@ def excel_parser_cat(
 
     # The starting row is the one following the last available data in siqual
     start_row = find_nearest_date(start_date, ws, column=column_numbers["DATE"]) + 1
-    end_row = find_nearest_date(
-        end_date, ws, column=column_numbers["DATE"], search_previous=True
-    )
+    end_row = find_nearest_date(end_date, ws, column=column_numbers["DATE"], search_previous=True)
 
     if start_row > end_row:
         raise Exception(f"No hay valores de {material} para cargar")

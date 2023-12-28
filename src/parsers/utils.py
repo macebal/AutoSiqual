@@ -38,9 +38,7 @@ def find_date_row(date: datetime, worksheet: Any, column: int) -> int:
         )
 
 
-def find_nearest_date(
-    date: datetime, worksheet: Any, column: int, search_previous: bool = False
-) -> int:
+def find_nearest_date(date: datetime, worksheet: Any, column: int, search_previous: bool = False) -> int:
     """Recursively find the nearest date in the worksheet.
 
     Parameters

@@ -106,6 +106,4 @@ class UserConfig(BaseModel):
         except ValidationError:
             raise ValueError(f"El archivo {filename} no tiene un formato correcto.")
         except Exception:
-            raise IOError(
-                f"No existe el archivo {filename} o hay un problema abriendolo."
-            )
+            raise IOError(f"No existe el archivo {filename} o hay un problema abriendolo.")
