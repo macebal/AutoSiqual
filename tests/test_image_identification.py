@@ -1,7 +1,7 @@
-import pytest
 import os
-from unittest.mock import patch
+import pytest
 from PIL import Image
+from unittest.mock import patch
 
 IN_GITHUB_ACTIONS = os.getenv("GITHUB_ACTIONS") == "true"
 

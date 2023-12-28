@@ -1,10 +1,10 @@
 import logging
 import openpyxl
 from datetime import datetime
-from typing import Callable
 from src.exceptions import ParameterNotFoundError
 from src.models.user_config import UserConfig
 from src.parsers.utils import find_nearest_date, find_parameter_column
+from typing import Callable
 
 LOGGER = logging.getLogger("ui_logger")
 
@@ -103,7 +103,7 @@ def excel_parser_cat(
 
     for k, v in columns_to_input.items():
         if v != "":
-            if isinstance(v,str):
+            if isinstance(v, str):
                 try:
                     column_index = find_parameter_column(
                         parameter=v, worksheet=ws, header_row=wb_file.header_row

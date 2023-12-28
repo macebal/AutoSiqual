@@ -1,10 +1,10 @@
+import ctypes
 import logging
 import pyautogui
-import ctypes
 from datetime import datetime, timedelta
-from src.paste_data import paste_data, qt_sleep, click_image
-from src.config import ConfigParser
 from parsers.excel_parsers import get_excel_parser
+from src.config import ConfigParser
+from src.paste_data import click_image, paste_data, qt_sleep
 
 STOP_DAYS_FROM_NOW = (
     10  # stop parsing when the date is X days from now (To account from missing data in the workbook)
@@ -31,8 +31,9 @@ def start_robot(material):
     config = ConfigParser()
     logger = logging.getLogger("ui_logger")
 
-    # These variables are defined in the config file and are used to configure how much time should the robot wait between input
-    # commands and how much time should it wait for the dialogs to open (in seconds) to account for the delay in the connection
+    # These variables are defined in the config file and are used to configure how much time should
+    # the robot wait between input commands and how much time should it wait for the dialogs
+    # to open (in seconds), to account for the delay in the connection
     DELAY_BETWEEN_COMMANDS, DELAY_BETWEEN_SCREENS = config.get_delay_times()
     material_data = config.get_material_data(material)
     plant_code, _ = config.get_active_plant_names()

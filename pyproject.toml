@@ -82,8 +82,17 @@ exclude = [
     "node_modules",
     "site-packages",
     "venv",
+    "gui", #mostly auto generated files
 ]
 
 # Same as Black.
 line-length = 110
 indent-width = 4
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+ignore = ["E501"]
+
+[tool.ruff.lint.isort]
+lines-between-types = 0
+no-sections = true

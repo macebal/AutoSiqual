@@ -1,13 +1,15 @@
 import json
-from typing import Self
 from pydantic import (
     BaseModel as pydantic_BaseModel,
-    Field,
+)
+from pydantic import (
     ConfigDict,
+    Field,
     ValidationError,
     model_validator,
 )
 from pydantic.alias_generators import to_camel
+from typing import Self
 
 
 class BaseModel(pydantic_BaseModel):

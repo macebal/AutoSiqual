@@ -1,8 +1,8 @@
 import datetime
 import logging
 import pyautogui
-from src.config import ConfigParser
 from PyQt5 import QtCore
+from src.config import ConfigParser
 from sys import exit
 
 

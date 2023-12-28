@@ -1,16 +1,14 @@
 import logging
-import sys
 import pyautogui
-from sys import exit
-from PyQt5 import QtWidgets, QtCore
-
-from gui.main import Ui_MainWindow
+import sys
 from gui.about import Ui_About
 from gui.log import Ui_LogWindow
-
-from src.config import ConfigParser
-from src.autosiqual import start_robot
+from gui.main import Ui_MainWindow
+from PyQt5 import QtCore, QtWidgets
 from src import __version__
+from src.autosiqual import start_robot
+from src.config import ConfigParser
+from sys import exit
 
 
 class mainWindow(QtWidgets.QMainWindow):
