@@ -5,9 +5,8 @@ from gui.about import Ui_About
 from gui.log import Ui_LogWindow
 from gui.main import Ui_MainWindow
 from PyQt5 import QtCore, QtWidgets
-from src import __version__
+from src import CONFIG, __version__
 from src.autosiqual import start_robot
-from src.config import ConfigParser
 from sys import exit
 
 
@@ -28,10 +27,14 @@ class mainWindow(QtWidgets.QMainWindow):
         )
 
         # parse config file
-        try:
-            self.config = ConfigParser()
-        except Exception as e:
-            QtWidgets.QMessageBox.critical(self, "Error", str(e), QtWidgets.QMessageBox.Ok)
+        self.config = CONFIG
+        if self.config is None:
+            QtWidgets.QMessageBox.critical(
+                self,
+                "Error",
+                "Ocurrió un problema al tratar de leer la configuración",
+                QtWidgets.QMessageBox.Ok,
+            )
             exit(1)
 
         self.populate_fields()
@@ -51,10 +54,11 @@ class mainWindow(QtWidgets.QMainWindow):
 
     def populate_fields(self):
         try:
-            _, active_plant_name = self.config.get_active_plant_names()
-            products, raw_materials = self.config.get_materials()
+            active_plant = self.config.active_plant
+            products = active_plant.materials.get_product_names()
+            raw_materials = active_plant.materials.get_raw_material_names()
 
-            self.ui.le_plant.setText(active_plant_name)
+            self.ui.le_plant.setText(active_plant.name)
 
             self.ui.cb_product.addItems(products)
             self.ui.cb_product.addItem("") if len(products) > 0 and len(raw_materials) > 0 else None

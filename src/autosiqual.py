@@ -3,12 +3,11 @@ import logging
 import pyautogui
 from datetime import datetime, timedelta
 from parsers.excel_parsers import get_excel_parser
-from src.config import ConfigParser
+from src import CONFIG
 from src.paste_data import click_image, paste_data, qt_sleep
 
-STOP_DAYS_FROM_NOW = (
-    10  # stop parsing when the date is X days from now (To account from missing data in the workbook)
-)
+# stop parsing when the date is X days from now (To account from missing data in the workbook)
+STOP_DAYS_FROM_NOW = 10
 
 
 def numlock_is_active():
@@ -21,23 +20,27 @@ def numlock_is_active():
     return bool(dll.GetKeyState(VK_NUMLOCK))
 
 
-def start_robot(material):
+def start_robot(material_name: str) -> None:
+    """Starts the robot from the Siqual's homescreen
+
+    Parameters
+    ----------
+    material_name : str
+        the name of the material to input its data into Siqual for the active plant
+
     """
-    Starts the robot from the Siqual's homescreen
-    \n
-    Params:
-    \tmaterial: the name of the material to input its data into Siqual
-    """
-    config = ConfigParser()
+
+    config = CONFIG
     logger = logging.getLogger("ui_logger")
 
     # These variables are defined in the config file and are used to configure how much time should
     # the robot wait between input commands and how much time should it wait for the dialogs
     # to open (in seconds), to account for the delay in the connection
-    DELAY_BETWEEN_COMMANDS, DELAY_BETWEEN_SCREENS = config.get_delay_times()
-    material_data = config.get_material_data(material)
-    plant_code, _ = config.get_active_plant_names()
-    is_raw_mat = material_data["isRawMaterial"]
+    DELAY_BETWEEN_COMMANDS = config.delay_between_commands
+    DELAY_BETWEEN_SCREENS = config.delay_between_screens
+
+    material_data = config.active_plant.materials.get_material_data_from_name(material_name)
+    plant_code = config.active_plant.code
 
     logger.info("Programa Iniciado - Tiene 10 segundos para hacer foco (maximizar la pantalla de SIQUAL)")
 
@@ -45,11 +48,11 @@ def start_robot(material):
         logger.info(f"{i}...")
         qt_sleep(1)
 
-    pyautogui.click  # To ensure focus
+    pyautogui.click()  # To ensure focus
 
-    # if numlock key is active, the following block disables it because otherwise the program won't input
-    # the commands correctly (it's a known bug atm)
     if numlock_is_active():
+        # if numlock key is active, the following block disables it because
+        # otherwise the program won't input the commands correctly (it's a known bug atm)
         logger.info("Tecla Bloq Num desactivada")
         pyautogui.press("numlock")
 
@@ -66,7 +69,7 @@ def start_robot(material):
     click_image(image_name="puntosSuspensivos.png", index=1, confidence=0.95)
     qt_sleep(DELAY_BETWEEN_SCREENS)
 
-    logger.info(f"Buscando ultimo RIC de {material}")
+    logger.info(f"Buscando ultimo RIC de {material_name}")
     qt_sleep(DELAY_BETWEEN_COMMANDS)
 
     pyautogui.typewrite(["tab", "tab"], interval=DELAY_BETWEEN_COMMANDS)
@@ -87,14 +90,11 @@ def start_robot(material):
     qt_sleep(DELAY_BETWEEN_SCREENS)
 
     # find the item of the material (the image is called like that aswell)
-    click_image(image_name=f"{material_data['siqualName']}.png", confidence=0.95)
+    click_image(image_name=f"{material_data.siqual_name}.png", confidence=0.95)
     qt_sleep(DELAY_BETWEEN_SCREENS)
 
-    # Press 5 times the pagedwn key to go to the end of the table
-    pyautogui.typewrite(
-        ["pagedown", "pagedown", "pagedown", "pagedown", "pagedown", "pagedown"],
-        interval=DELAY_BETWEEN_COMMANDS,
-    )
+    # Press 6 times the pagedwn key to go to the end of the table
+    pyautogui.typewrite(["pagedown"] * 6, interval=DELAY_BETWEEN_COMMANDS)
 
     # Click in the yellow square to select the last RIC
     click_image(image_name="casilleroSeleccionado.png")
@@ -105,26 +105,9 @@ def start_robot(material):
     )  # Press the ok button
 
     click_image(image_name="cargarDatos.png", confidence=0.95)
-    logger.info(f"Cargado el ultimo RIC de {material}")
+    logger.info(f"Cargado el ultimo RIC de {material_name}")
     qt_sleep(DELAY_BETWEEN_COMMANDS)
 
-    # Position the cursor over the date
-    # pyautogui.typewrite(['tab', 'tab', 'tab', 'tab', 'tab'], interval=DELAY_BETWEEN_COMMANDS)
-
-    # #select and copy the date
-    # pyautogui.hotkey('shiftleft','end')
-    # qt_sleep(DELAY_BETWEEN_COMMANDS)
-
-    # pyautogui.hotkey('ctrl','c') #copy the date
-    # qt_sleep(DELAY_BETWEEN_COMMANDS)
-
-    # clipboard_text = pyclip.paste(text=True)
-    # if clipboard_text:
-    #     date = datetime.strptime(clipboard_text, '%Y-%m-%d')
-    # else:
-    #     logger.info("No se pudo copiar la fecha, no hay datos en el portapapeles.")
-    #     qt_sleep(5)
-    #     exit(1)
     try:
         str_date = pyautogui.prompt(
             text="Introduzca la fecha inicial de toma de muestra de este RIC. El formato debe ser igual al que aparece en pantalla: YYYY-MM-DD",
@@ -145,13 +128,13 @@ def start_robot(material):
 
     today = datetime.today().replace(hour=0, minute=0, second=0, microsecond=0)
 
-    if is_raw_mat:
+    if material_data.is_raw_material:
         # end date is the last day of last month
         end_date = today.replace(day=1) - timedelta(days=1)
     else:
         end_date = today - timedelta(days=STOP_DAYS_FROM_NOW)
 
     parser = get_excel_parser(plant_code)
-    parsed_data = parser(date, end_date, material)
+    parsed_data = parser(date, end_date, material_name)
 
-    paste_data(parsed_data, material)
+    paste_data(parsed_data, material_name)

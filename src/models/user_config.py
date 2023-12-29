@@ -50,6 +50,15 @@ class Materials(BaseModel):
             if item.name == name:
                 return item
 
+    def _get_material_names(self, is_raw_mat: bool = True) -> list[str]:
+        return [item.name for item in self.data if item.is_raw_material == is_raw_mat]
+
+    def get_product_names(self) -> list[str]:
+        return self._get_material_names(is_raw_mat=False)
+
+    def get_raw_material_names(self) -> list[str]:
+        return self._get_material_names(is_raw_mat=True)
+
 
 class Plant(BaseModel):
     name: str = ""

@@ -2,7 +2,7 @@ import datetime
 import logging
 import pyautogui
 from PyQt5 import QtCore
-from src.config import ConfigParser
+from src import CONFIG
 from sys import exit
 
 
@@ -45,15 +45,15 @@ def click_image(image_name, index=0, confidence=1):
     pyautogui.click(coords[0], coords[1])  # click the image
 
 
-def paste_data(data, material):
-    config = ConfigParser()
+def paste_data(data, material_name):
+    config = CONFIG
     logger = logging.getLogger("ui_logger")
 
-    # These variables are defined in the config file and are used to configure how much time should the robot wait between input
-    # commands and how much time should it wait for the dialogs to open (in seconds) to account for the delay in the connection
-    DELAY_BETWEEN_COMMANDS, DELAY_BETWEEN_SCREENS = config.get_delay_times()
-    material_data = config.get_material_data(material)
-    position_in_generic_list = material_data["genericPositionInList"]
+    DELAY_BETWEEN_COMMANDS = config.delay_between_commands
+    DELAY_BETWEEN_SCREENS = config.delay_between_screens
+
+    material_data = config.active_plant.materials.get_material_data_from_name(material_name)
+    position_in_generic_list = material_data.generic_position_in_list
 
     for date_data in data:
         current_date = datetime.datetime.strftime(date_data["DATE"], "%Y-%m-%d")
@@ -88,7 +88,7 @@ def paste_data(data, material):
         click_image("cuadroseleccionado.png", index=1, confidence=0.9)
         qt_sleep(DELAY_BETWEEN_SCREENS)
 
-        for i in range(position_in_generic_list):
+        for _ in range(position_in_generic_list):
             pyautogui.typewrite(["down"])
 
         qt_sleep(DELAY_BETWEEN_SCREENS)
@@ -96,11 +96,8 @@ def paste_data(data, material):
         pyautogui.typewrite(["enter"])
         qt_sleep(DELAY_BETWEEN_SCREENS)
 
-        pyautogui.typewrite(["tab", "tab", "tab", "tab", "tab", "tab"], interval=DELAY_BETWEEN_COMMANDS)
-        pyautogui.typewrite(
-            ["pageup", "pageup", "pageup", "pageup", "pageup"],
-            interval=DELAY_BETWEEN_COMMANDS,
-        )
+        pyautogui.typewrite(["tab"] * 6, interval=DELAY_BETWEEN_COMMANDS)
+        pyautogui.typewrite(["pageup"] * 5, interval=DELAY_BETWEEN_COMMANDS)
 
         # This loops needs the dictionary to be in order of appearence
         for key, value in date_data.items():
@@ -120,7 +117,7 @@ def paste_data(data, material):
         qt_sleep(DELAY_BETWEEN_SCREENS)
 
         # Accept all the following pop up messages
-        for i in range(6):
+        for _ in range(6):
             pyautogui.typewrite(["enter"])
             qt_sleep(DELAY_BETWEEN_SCREENS)
 
