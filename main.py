@@ -10,7 +10,7 @@ from gui.log import Ui_LogWindow
 
 from src.config import ConfigParser
 from src.autosiqual import start_robot
-from src import __version__
+from src import __version__, HEADLESS_MODE
 
 class mainWindow(QtWidgets.QMainWindow):
 
@@ -68,6 +68,11 @@ class mainWindow(QtWidgets.QMainWindow):
 
     def input_data(self):
         self.log.clear_log()
+        
+        if HEADLESS_MODE:
+            self.logger.setLevel(logging.DEBUG)
+            self.logger.debug("Headless mode active")
+        
         material = str(self.ui.cb_product.currentText())
         
         if len(material) > 0:
