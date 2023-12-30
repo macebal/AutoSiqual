@@ -2,7 +2,7 @@ import datetime
 import logging
 import pyautogui
 from PyQt5 import QtCore
-from src import CONFIG
+from src import CONFIG, HEADLESS_MODE
 from sys import exit
 
 
@@ -29,6 +29,10 @@ def click_image(image_name, index=0, confidence=1):
     logger = logging.getLogger("ui_logger")
 
     path = "img\\" + image_name
+
+    if HEADLESS_MODE:
+        logger.debug(f"HEADLESS MODE: Skipping click of {path} with confidence={confidence}")
+        return
 
     if confidence < 1:
         results = list(pyautogui.locateAllOnScreen(path, confidence=confidence))

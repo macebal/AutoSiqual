@@ -5,7 +5,7 @@ from gui.about import Ui_About
 from gui.log import Ui_LogWindow
 from gui.main import Ui_MainWindow
 from PyQt5 import QtCore, QtWidgets
-from src import CONFIG, __version__
+from src import CONFIG, HEADLESS_MODE, __version__
 from src.autosiqual import start_robot
 from sys import exit
 
@@ -71,6 +71,10 @@ class mainWindow(QtWidgets.QMainWindow):
     def input_data(self):
         self.log.clear_log()
         material = str(self.ui.cb_product.currentText())
+
+        if HEADLESS_MODE:
+            self.logger.setLevel(logging.DEBUG)
+            self.logger.debug("Headless mode active")
 
         if len(material) > 0:
             w, h = pyautogui.size()  # size of screen
