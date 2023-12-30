@@ -1,6 +1,7 @@
 # pyuic5 "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\gui.ui" -o "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\gui.py"
 # pyuic5 "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\log.ui" -o "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\log.py"
 # pyuic5 "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\about.ui" -o "C:\\Users\\macebal\\Desktop\\Python\\GUI\\AutoSiqual v2\\about.py"
+export AUTOSIQUAL_HEADLESS_MODE=False
 
 .PHONY: build
 
@@ -12,7 +13,7 @@ build:
 	./bin/build.sh
 	
 run-dev:
-	poetry run python -m main
+	AUTOSIQUAL_HEADLESS_MODE=True poetry run python -m main
 
 test:
 	poetry run pytest
