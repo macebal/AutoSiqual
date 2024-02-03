@@ -49,6 +49,8 @@ class Materials(BaseModel):
         for item in self.data:
             if item.name == name:
                 return item
+        else:
+            raise ValueError(f"No se encuentra un material con el nombre {name}")
 
     def _get_material_names(self, is_raw_mat: bool = True) -> list[str]:
         return [item.name for item in self.data if item.is_raw_material == is_raw_mat]
@@ -74,14 +76,14 @@ class UserConfig(BaseModel):
     active_plant: Plant | None = None
 
     @model_validator(mode="after")
-    def check_active_plant_code_exists(self) -> None:
+    def check_active_plant_code_exists(self):
         for plant in self.plants:
             if plant.code == self.active_plant_code:
                 self.active_plant = plant
                 break
 
         if not self.active_plant_code:
-            raise ValidationError(
+            raise ValueError(
                 f"El codigo de la planta activa {self.active_plant_code} "
                 "no coincide con ninguna de las plantas declaradas"
             )

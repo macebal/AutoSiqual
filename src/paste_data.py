@@ -1,52 +1,8 @@
 import datetime
 import logging
 import pyautogui
-from PyQt5 import QtCore
-from src import CONFIG, HEADLESS_MODE
-from sys import exit
-
-
-def qt_sleep(seconds):
-    """
-    Create a sleep period that doesn't freeze the UI.
-    \n
-    Params:
-    \tseconds: the amount of seconds to sleep.
-    """
-    loop = QtCore.QEventLoop()
-    QtCore.QTimer.singleShot(int(seconds * 1000), loop.quit)
-    loop.exec_()
-
-
-def click_image(image_name, index=0, confidence=1):
-    """
-    Clicks the region onscreen that is equal to the provided one.
-    \n
-    Params:
-    \timage_name: The name and extension of an image located in the img folder
-    \tindex: If there is more than one result for that image, the index in the resulting list
-    """
-    logger = logging.getLogger("ui_logger")
-
-    path = "img\\" + image_name
-
-    if HEADLESS_MODE:
-        logger.debug(f"HEADLESS MODE: Skipping click of {path} with confidence={confidence}")
-        return
-
-    if confidence < 1:
-        results = list(pyautogui.locateAllOnScreen(path, confidence=confidence))
-    else:
-        results = list(pyautogui.locateAllOnScreen(path))
-
-    if len(results) == 0:
-        logger.critical(f"No se encuentra el boton {image_name}. ¿La ventana está cerrada?")
-        logger.critical("El programa terminó abruptamente.")
-        qt_sleep(5)
-        exit(1)
-
-    coords = pyautogui.center(results[index])  # find the coordinates
-    pyautogui.click(coords[0], coords[1])  # click the image
+from src import CONFIG
+from utils import click_image, qt_sleep
 
 
 def paste_data(data, material_name):

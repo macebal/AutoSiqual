@@ -145,7 +145,7 @@ def test_clicks_images(monkeypatch, needle, haystack, expected_coords, params):
     monkeypatch.setattr("pyscreeze.screenshot", fake_screenshot)
 
     with patch("pyautogui.click") as mocked_pyautogui_click:
-        from paste_data import click_image
+        from utils import click_image
 
         click_image(needle, **params)
 

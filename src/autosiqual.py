@@ -1,23 +1,25 @@
-import ctypes
 import logging
 import pyautogui
 from datetime import datetime, timedelta
 from parsers.excel_parsers import get_excel_parser
 from src import CONFIG
-from src.paste_data import click_image, paste_data, qt_sleep
+from src.paste_data import paste_data
+from utils import click_image, numlock_is_active, qt_sleep
 
 # stop parsing when the date is X days from now (To account from missing data in the workbook)
 STOP_DAYS_FROM_NOW = 10
 
 
-def numlock_is_active():
+def ensure_numlock_is_not_active() -> None:
+    """If numlock key is active, this function disables it because otherwise the program
+    won't input the commands correctly (it's a known bug at the moment).
+
     """
-    Returns a boolean indicating whether the num lock key is pressed (true) or not (false)
-    """
-    # returns True if the NumLock key is activated
-    dll = ctypes.WinDLL("User32.dll")
-    VK_NUMLOCK = 0x90
-    return bool(dll.GetKeyState(VK_NUMLOCK))
+
+    logger = logging.getLogger("ui_logger")
+    if numlock_is_active():
+        logger.info("Tecla Bloq Num desactivada")
+        pyautogui.press("numlock")
 
 
 def start_robot(material_name: str) -> None:
@@ -50,11 +52,7 @@ def start_robot(material_name: str) -> None:
 
     pyautogui.click()  # To ensure focus
 
-    if numlock_is_active():
-        # if numlock key is active, the following block disables it because
-        # otherwise the program won't input the commands correctly (it's a known bug atm)
-        logger.info("Tecla Bloq Num desactivada")
-        pyautogui.press("numlock")
+    ensure_numlock_is_not_active()
 
     logger.info("Abriendo pantalla de Creación/Modificación de RIC")
     qt_sleep(DELAY_BETWEEN_COMMANDS)
@@ -116,9 +114,7 @@ def start_robot(material_name: str) -> None:
         )
         date = datetime.strptime(str_date, "%Y-%m-%d")
         logger.info(f"Ha seleccionado la fecha {date}")
-        if numlock_is_active():
-            logger.info("Tecla Bloq Num desactivada")
-            pyautogui.press("numlock")
+        ensure_numlock_is_not_active()
     except Exception:
         logger.info(f"No se buscar la fecha. {str_date} no es una fecha valida o tiene el formato incorrecto")
         qt_sleep(5)
