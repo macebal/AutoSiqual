@@ -23,3 +23,9 @@ version-bump:
 
 open-gui-designer:
 	./bin/open_qt_designer.sh
+
+format:
+	ruff format .
+
+lint:
+	ruff check . --fix

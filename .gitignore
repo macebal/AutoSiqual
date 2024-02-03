@@ -132,3 +132,6 @@ dmypy.json
 .coverage
 
 *.cfg
+
+# ruff
+.ruff_cache

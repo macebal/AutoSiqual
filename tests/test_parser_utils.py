@@ -34,9 +34,7 @@ def test_find_date_row(load_dates_sheet, target_date, expected_row):
         (datetime(2023, 11, 15), 47, False),
     ],
 )
-def test_find_nearest_date_row(
-    load_dates_sheet, target_date, expected_row, search_previous
-):
+def test_find_nearest_date_row(load_dates_sheet, target_date, expected_row, search_previous):
     ws, dates_column, _ = load_dates_sheet
     row = find_nearest_date(target_date, ws, dates_column, search_previous)
     assert row == expected_row

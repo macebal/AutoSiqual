@@ -1,13 +1,15 @@
 import json
-from typing import Self
 from pydantic import (
     BaseModel as pydantic_BaseModel,
-    Field,
+)
+from pydantic import (
     ConfigDict,
+    Field,
     ValidationError,
     model_validator,
 )
 from pydantic.alias_generators import to_camel
+from typing import Self
 
 
 class BaseModel(pydantic_BaseModel):
@@ -47,6 +49,17 @@ class Materials(BaseModel):
         for item in self.data:
             if item.name == name:
                 return item
+        else:
+            raise ValueError(f"No se encuentra un material con el nombre {name}")
+
+    def _get_material_names(self, is_raw_mat: bool = True) -> list[str]:
+        return [item.name for item in self.data if item.is_raw_material == is_raw_mat]
+
+    def get_product_names(self) -> list[str]:
+        return self._get_material_names(is_raw_mat=False)
+
+    def get_raw_material_names(self) -> list[str]:
+        return self._get_material_names(is_raw_mat=True)
 
 
 class Plant(BaseModel):
@@ -63,14 +76,14 @@ class UserConfig(BaseModel):
     active_plant: Plant | None = None
 
     @model_validator(mode="after")
-    def check_active_plant_code_exists(self) -> None:
+    def check_active_plant_code_exists(self):
         for plant in self.plants:
             if plant.code == self.active_plant_code:
                 self.active_plant = plant
                 break
 
         if not self.active_plant_code:
-            raise ValidationError(
+            raise ValueError(
                 f"El codigo de la planta activa {self.active_plant_code} "
                 "no coincide con ninguna de las plantas declaradas"
             )
@@ -106,6 +119,4 @@ class UserConfig(BaseModel):
         except ValidationError:
             raise ValueError(f"El archivo {filename} no tiene un formato correcto.")
         except Exception:
-            raise IOError(
-                f"No existe el archivo {filename} o hay un problema abriendolo."
-            )
+            raise IOError(f"No existe el archivo {filename} o hay un problema abriendolo.")
